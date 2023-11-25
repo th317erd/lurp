@@ -19,4 +19,4 @@ Component.Element.tagName('DIV').on('click', () => {
 
 })();
 
-bridge.render(CustomButton.name('hello')());
+console.log(CustomButton.name('hello')('test1', 'test2'));

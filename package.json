@@ -16,6 +16,9 @@
   "keywords": [],
   "author": "Wyatt Greenway",
   "license": "ISC",
+  "dependencies": {
+    "deadbeef": "^1.1.2"
+  },
   "devDependencies": {
     "@spothero/eslint-plugin-spothero": "github:spothero/eslint-plugin-spothero",
     "colors": "^1.4.0",
