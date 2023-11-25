@@ -1,0 +1,37 @@
+{
+  "name": "lurp",
+  "version": "1.0.0",
+  "description": "A different take on web development",
+  "main": "lib/index.js",
+  "type": "module",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "coverage": "clear ; node ./node_modules/.bin/nyc ./node_modules/.bin/jasmine",
+    "test": "node ./node_modules/.bin/jasmine",
+    "test-debug": "node --inspect-brk ./node_modules/.bin/jasmine",
+    "test-watch": "watch 'clear ; node ./node_modules/.bin/jasmine' . --wait=2 --interval=1"
+  },
+  "keywords": [],
+  "author": "Wyatt Greenway",
+  "license": "ISC",
+  "devDependencies": {
+    "@spothero/eslint-plugin-spothero": "github:spothero/eslint-plugin-spothero",
+    "colors": "^1.4.0",
+    "diff": "^5.1.0",
+    "eslint": "^8.52.0",
+    "jasmine": "^5.1.0",
+    "nyc": "^15.1.0"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "spec/**",
+      "lib/proxy-class/proxy-class.js"
+    ]
+  }
+}
