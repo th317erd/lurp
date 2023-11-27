@@ -1,4 +1,6 @@
-const { Worker, Component } = await import('./lurp/index.js');
+const { Worker, Component, Utils } = await import('./lurp/index.js');
+
+globalThis.Utils = Utils;
 
 console.log('APP STARTED!', globalThis);
 
@@ -15,8 +17,10 @@ const CustomButton = Component.create(({ props, children, useState, ref }) => {
   name: 'Test',
 });
 
-Component.Element.tagName('DIV').on('click', () => {
+Component.Element.$tagName('DIV').on('click', () => {
 
 })();
 
-console.log(CustomButton.name('hello')('test1', 'test2'));
+let result = CustomButton.name('hello')('test1', CustomButton());
+console.log(result);
+console.log('ONE: ', Utils.deadbeef(result), '\nTWO: ', Utils.deadbeef(result.children[1]));
