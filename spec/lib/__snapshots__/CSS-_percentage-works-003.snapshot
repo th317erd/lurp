@@ -2,9 +2,10 @@
   '$type': 'Token',
   value: Token {
     end: 2,
-    id: true,
-    name: 'hash',
+    name: 'percentage',
+    ratio: 0,
+    raw: '0%',
     start: 0,
-    value: 'a'
+    value: 0
   }
 }

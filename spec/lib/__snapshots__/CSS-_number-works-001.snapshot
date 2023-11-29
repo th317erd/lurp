@@ -2,9 +2,9 @@
   '$type': 'Token',
   value: Token {
     end: 2,
-    id: true,
-    name: 'hash',
+    name: 'number',
+    number: '42',
     start: 0,
-    value: 'a'
+    value: 42
   }
 }

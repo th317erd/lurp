@@ -8,6 +8,7 @@ import {
   Tokenizer,
   CSS,
 } from '../../lib/index.js';
+import { compressComments } from '../../lib/css.js';
 
 const {
   $any,
@@ -18,6 +19,7 @@ const {
 const {
   $atKeyword,
   $comment,
+  $dimension,
   $error,
   $escape,
   $function,
@@ -25,7 +27,11 @@ const {
   $hexDigit,
   $identifier,
   $newline,
+  $number,
+  $percentage,
   $string,
+  $unicodeRange,
+  $url,
   $whitespace,
 } = CSS;
 
@@ -41,6 +47,23 @@ describe('CSS', () => {
     it('works', () => {
       let context = Tokenizer.createPatternContext('/* comment */');
       expect($comment(context)).toMatchSnapshot();
+    });
+
+    it('can compress comments', () => {
+      let context = Tokenizer.createPatternContext('/* comment1 */ /* comment2 */ stuff /* comment3 */');
+      let $program = $repeat(
+        $any(
+          $whitespace.discard(true),
+          $comment,
+          $identifier,
+        ),
+      );
+
+      let result = $program(context);
+      expect(result).toMatchSnapshot();
+
+      result.children = compressComments(context, result.children);
+      expect(result).toMatchSnapshot();
     });
   });
 
@@ -204,6 +227,86 @@ describe('CSS', () => {
       expect(test('"test \\"substring\\" here"')).toMatchSnapshot();
       expect(test('"test \'substring\' here"')).toMatchSnapshot();
       expect(test('"test \'substring\' \\\nhere"')).toMatchSnapshot();
+      expect(test('"Starry Night \\1f303"')).toMatchSnapshot();
+    });
+  });
+
+  describe('$url', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $url(context);
+      };
+
+      // Success
+      expect(test('url(https://test.com)')).toMatchSnapshot();
+      expect(test('url(http://www.test.com/hello+world/folder-name/index.html)')).toMatchSnapshot();
+      expect(test('url( https://test.com )')).toMatchSnapshot();
+      expect(test('url( \nhttps://test.com\n )')).toMatchSnapshot();
+    });
+  });
+
+  describe('$number', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $number(context);
+      };
+
+      // Success
+      expect(test('42')).toMatchSnapshot();
+      expect(test('+42')).toMatchSnapshot();
+      expect(test('-42')).toMatchSnapshot();
+      expect(test('-42e-1')).toMatchSnapshot();
+      expect(test('42.1234')).toMatchSnapshot();
+      expect(test('+42.1234')).toMatchSnapshot();
+      expect(test('-42.1234')).toMatchSnapshot();
+      expect(test('-.1234e-1')).toMatchSnapshot();
+      expect(test('-.1234e+1')).toMatchSnapshot();
+      expect(test('+.1234E+1')).toMatchSnapshot();
+      expect(test('+.1234E-1')).toMatchSnapshot();
+    });
+  });
+
+  describe('$dimension', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $dimension(context);
+      };
+
+      // Success
+      expect(test('12.43px')).toMatchSnapshot();
+      expect(test('-.43em')).toMatchSnapshot();
+      expect(test('0pt')).toMatchSnapshot();
+    });
+  });
+
+  describe('$percentage', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $percentage(context);
+      };
+
+      // Success
+      expect(test('12.43%')).toMatchSnapshot();
+      expect(test('-.43%')).toMatchSnapshot();
+      expect(test('0%')).toMatchSnapshot();
+    });
+  });
+
+  describe('$unicodeRange', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $unicodeRange(context);
+      };
+
+      // Success
+      expect(test('U+AA-00FF')).toMatchSnapshot();
+      expect(test('U+AA??')).toMatchSnapshot();
+      expect(test('U+0AFF')).toMatchSnapshot();
     });
   });
 });
