@@ -1,0 +1,9 @@
+{
+  '$type': 'Token',
+  value: Token {
+    end: 17,
+    name: 'hash',
+    start: 0,
+    value: '---a🌃x_01d-'
+  }
+}

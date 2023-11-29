@@ -16,13 +16,16 @@ const {
 } = Tokenizer;
 
 const {
+  $atKeyword,
   $comment,
   $error,
   $escape,
   $function,
+  $hash,
   $hexDigit,
   $identifier,
   $newline,
+  $string,
   $whitespace,
 } = CSS;
 
@@ -131,6 +134,76 @@ describe('CSS', () => {
       expect(test('-0(')).toBe(undefined);
       expect(test('0(')).toBe(undefined);
       expect(test('0a(')).toBe(undefined);
+    });
+  });
+
+  describe('$atKeyword', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $atKeyword(context);
+      };
+
+      // Success
+      expect(test('@a')).toMatchSnapshot();
+      expect(test('@abc0_01d-')).toMatchSnapshot();
+      expect(test('@--0abc0_01d-')).toMatchSnapshot();
+      expect(test('@--_abc0_01d-')).toMatchSnapshot();
+      expect(test('@---abc0_01d-')).toMatchSnapshot();
+      expect(test('@---a\\ bc0_01d-')).toMatchSnapshot();
+      expect(test('@---a\\1f303x_01d-')).toMatchSnapshot();
+      expect(test('@-a')).toMatchSnapshot();
+      expect(test('@_Z')).toMatchSnapshot();
+      expect(test('@Z')).toMatchSnapshot();
+
+      // Fail
+      expect(test('@-0')).toBe(undefined);
+      expect(test('@0')).toBe(undefined);
+      expect(test('@0a')).toBe(undefined);
+    });
+  });
+
+  describe('$hash', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $hash(context);
+      };
+
+      // Success
+      expect(test('#a')).toMatchSnapshot();
+      expect(test('#abc0_01d-')).toMatchSnapshot();
+      expect(test('#--0abc0_01d-')).toMatchSnapshot();
+      expect(test('#--_abc0_01d-')).toMatchSnapshot();
+      expect(test('#---abc0_01d-')).toMatchSnapshot();
+      expect(test('#---a\\ bc0_01d-')).toMatchSnapshot();
+      expect(test('#---a\\1f303x_01d-')).toMatchSnapshot();
+      expect(test('#-a')).toMatchSnapshot();
+      expect(test('#_Z')).toMatchSnapshot();
+      expect(test('#Z')).toMatchSnapshot();
+      expect(test('#-0')).toMatchSnapshot();
+      expect(test('#0')).toMatchSnapshot();
+      expect(test('#0a')).toMatchSnapshot();
+      expect(test('#0a something else')).toMatchSnapshot();
+    });
+  });
+
+  describe('$string', () => {
+    it('works', () => {
+      const test = (src) => {
+        let context = Tokenizer.createPatternContext(src);
+        return $string(context);
+      };
+
+      // Success
+      expect(test('\'test\'')).toMatchSnapshot();
+      expect(test('\'test \\\'substring\\\' here\'')).toMatchSnapshot();
+      expect(test('\'test "substring" here\'')).toMatchSnapshot();
+      expect(test('\'test "substring" \\\nhere\'')).toMatchSnapshot();
+      expect(test('"test"')).toMatchSnapshot();
+      expect(test('"test \\"substring\\" here"')).toMatchSnapshot();
+      expect(test('"test \'substring\' here"')).toMatchSnapshot();
+      expect(test('"test \'substring\' \\\nhere"')).toMatchSnapshot();
     });
   });
 });

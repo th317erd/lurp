@@ -1,0 +1,9 @@
+{
+  '$type': 'Token',
+  value: Token {
+    end: 2,
+    name: 'hash',
+    start: 0,
+    value: 'Z'
+  }
+}
