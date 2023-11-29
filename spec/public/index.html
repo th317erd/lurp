@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Playground tests for components">
+
     <title>LURP</title>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "lurp": "/js/lurp/index.js"
+        }
+      }
+    </script>
+
     <script src="./js/main.js" type="module" async></script>
   </head>
 
   <body>
     Hello World!
+    <o-require src="/js/test-component.html"></o-require>
+    <test-component class="red" id="test">
+      <span>Hello!</span>
+    </test-component>
+
+    <script>
+      setTimeout(() => {
+        let element     = document.getElementById('test');
+        let newElement  = element.cloneNode(true);
+        newElement.setAttribute('id', `${element.getAttribute('id')}1`);
+        document.body.appendChild(newElement);
+      }, 2500);
+    </script>
   </body>
 </html>

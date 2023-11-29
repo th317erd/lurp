@@ -197,14 +197,4 @@ describe('Utils', () => {
       expect(Utils.noe({})).toBe(false);
     });
   });
-
-  describe('propsDiffer', () => {
-    it('works', () => {
-      expect(Utils.propsDiffer({}, {})).toEqual(undefined);
-      expect(Utils.propsDiffer({ a: true }, {})).toEqual({ a: [ true, undefined ] });
-      expect(Utils.propsDiffer({ a: true }, { a: true })).toEqual(undefined);
-      expect(Utils.propsDiffer({ a: true }, { a: 1 })).toEqual({ a: [ true, 1 ] });
-      expect(Utils.propsDiffer({ a: true }, { a: 1, b: 'stuff' })).toEqual({ a: [ true, 1 ], b: [ undefined, 'stuff' ] });
-    });
-  });
 });

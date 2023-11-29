@@ -1,34 +1,20 @@
-import { Elements, Utils } from '../../lib/index.js';
+import * as _TestHelpers from '../support/test-helpers.js';
 
-describe('Elements', () => {
-  describe('ElementsDefinition', () => {
-    it('can properly calculate uniqueness', () => {
-      expect(Utils.deadbeef(Elements.Element('SPAN')())).toBe(Utils.deadbeef(Elements.Element('SPAN')()));
-      expect(Utils.deadbeef(Elements.Element('SPAN')(Elements.Element('SPAN')))).toBe(Utils.deadbeef(Elements.Element('SPAN')(Elements.Element('SPAN')())));
-      expect(
-        Utils.deadbeef(Elements.Element('SPAN')(Elements.Element('SPAN'))),
-      ).toBe(
-        Utils.deadbeef(Elements.Element('SPAN')(Elements.Element('SPAN')())),
-      );
-    });
+import { Component } from '../../lib/index.js';
 
-    it('can properly calculate id based off parents', () => {
-      let result1 = Elements.Element('SPAN')();
-      let result2 = Elements.Element('SPAN')();
+describe('Component', () => {
+  describe('createStyleForDocument', () => {
+    it('works', () => {
+      expect(Component.createStyleForDocument('test-component', 'span {}')).toEqual('test-component span {}');
+      expect(Component.createStyleForDocument('test-component', ':host {}')).toEqual('test-component {}');
+      expect(Component.createStyleForDocument('test-component', ':host-context(body.red) span {}\n\nspan {}')).toEqual('body.red test-component span {}\n\ntest-component span {}');
+      expect(Component.createStyleForDocument('test-component', ':host span {}')).toEqual('test-component span {}');
+      expect(Component.createStyleForDocument('test-component', ':host(h1) span {}')).toEqual('h1[data-component-name="test-component"] span {}');
+      expect(Component.createStyleForDocument('test-component', ':host(.red) span {}')).toEqual('test-component.red span {}');
+      expect(Component.createStyleForDocument('test-component', ':host(.red[derp="stuff"]) span {}')).toEqual('test-component.red[derp="stuff"] span {}');
+      expect(Component.createStyleForDocument('test-component', ':host-context(body.red) span {}')).toEqual('body.red test-component span {}');
+      expect(Component.createStyleForDocument('test-component', ':host-context(body.red[theme="dark"]) span {}')).toEqual('body.red[theme="dark"] test-component span {}');
 
-      // First they start off the same
-      expect(Utils.deadbeef(result1)).toBe(Utils.deadbeef(result2));
-      expect(result1.fullID()).toBe(result2.fullID());
-
-      // Then we add a child to "result2"
-      result2.children.push(result1.clone({ parent: result2 }));
-
-      // Check children (no longer the same)
-      expect(result2.fullID()).not.toBe(result1.fullID());
-
-      // Check parent
-      expect(Utils.deadbeef(result1)).not.toBe(Utils.deadbeef(result2.children[0]));
-      expect(result1.fullID()).not.toBe(result2.children[0].fullID());
     });
   });
 });

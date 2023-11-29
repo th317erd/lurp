@@ -1,0 +1,37 @@
+<template for="TestComponent">
+  <style>
+    [data="test&quote;"] {
+      color: red;
+    }
+
+    :host-context(body.red) span {
+      color: red;
+    }
+
+    :host {
+      background-color: pink;
+    }
+
+    /* :host-context(.red) span {
+      color: blue;
+    } */
+  </style>
+
+  <slot><span>Dude, hi there!</span></slot>
+
+  <span>Hello world!</span>
+</template>
+
+<script>
+  class TestComponent extends Component {
+    static ELEMENT_NAME = 'test-component';
+
+    mounted() {
+      console.log('mounted', this.q('span'));
+    }
+
+    unmounted() {
+      console.log('unmounted', arguments, this.children);
+    }
+  }
+</script>
