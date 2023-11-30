@@ -16,11 +16,21 @@
     "build-watch": "watch 'clear ; ./node_modules/.bin/webpack' . --wait=2 --interval=1",
     "prepublishOnly": "NODE_ENV=production ./node_modules/.bin/webpack"
   },
-  "keywords": [],
+  "keywords": [
+    "html",
+    "browser",
+    "ui",
+    "interface",
+    "ux",
+    "framework",
+    "elements",
+    "dom"
+  ],
   "author": "Wyatt Greenway",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "deadbeef": "^1.1.3",
+    "prixi": "^1.0.2",
     "xml-name-validator": "^5.0.0"
   },
   "devDependencies": {
@@ -30,6 +40,7 @@
     "diff": "^5.1.0",
     "eslint": "^8.54.0",
     "jasmine": "^5.1.0",
+    "jsdom": "^23.0.0",
     "nyc": "^15.1.0",
     "terser-webpack-plugin": "^5.3.9",
     "webpack": "^5.89.0",
@@ -41,8 +52,7 @@
       "html"
     ],
     "exclude": [
-      "spec/**",
-      "lib/proxy-class/proxy-class.js"
+      "spec/**"
     ]
   }
 }

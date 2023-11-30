@@ -1,20 +1,29 @@
 import * as _TestHelpers from '../support/test-helpers.js';
 
-import { Component } from '../../lib/index.js';
+import { Component }  from '../../lib/index.js';
+import { JSDOM }      from 'jsdom';
 
 describe('Component', () => {
-  describe('createStyleForDocument', () => {
-    it('works', () => {
-      expect(Component.createStyleForDocument('test-component', 'span {}')).toEqual('test-component span {}');
-      expect(Component.createStyleForDocument('test-component', ':host {}')).toEqual('test-component {}');
-      expect(Component.createStyleForDocument('test-component', ':host-context(body.red) span {}\n\nspan {}')).toEqual('body.red test-component span {}\n\ntest-component span {}');
-      expect(Component.createStyleForDocument('test-component', ':host span {}')).toEqual('test-component span {}');
-      expect(Component.createStyleForDocument('test-component', ':host(h1) span {}')).toEqual('h1[data-component-name="test-component"] span {}');
-      expect(Component.createStyleForDocument('test-component', ':host(.red) span {}')).toEqual('test-component.red span {}');
-      expect(Component.createStyleForDocument('test-component', ':host(.red[derp="stuff"]) span {}')).toEqual('test-component.red[derp="stuff"] span {}');
-      expect(Component.createStyleForDocument('test-component', ':host-context(body.red) span {}')).toEqual('body.red test-component span {}');
-      expect(Component.createStyleForDocument('test-component', ':host-context(body.red[theme="dark"]) span {}')).toEqual('body.red[theme="dark"] test-component span {}');
+  let dom;
 
+  beforeEach(() => {
+    dom = new JSDOM(`
+<!DOCTYPE html><html><head><style>
+:host([stuff="true"]), :host .sub, :host(.test) {
+  color: red;
+}
+
+:host-context(body.dark) span, span {
+  background-color: black;
+}
+</style></head><body></body></html>
+`.trim());
+  });
+
+  describe('compileStyleForDocument', () => {
+    it('works', () => {
+      let styleElement = dom.window.document.head.querySelector('style');
+      expect(Component.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span, span {background-color: black;}');
     });
   });
 });

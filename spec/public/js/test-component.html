@@ -1,25 +1,18 @@
 <template for="TestComponent">
   <style>
-    [data="test&quote;"] {
-
+    span {
+      user-select: none;
+      cursor: pointer;
     }
 
-    :host-context(body.red) span {
+    :host(.red) span {
       color: red;
     }
-
-    :host {
-      background-color: pink;
-    }
-
-    /* :host-context(.red) span {
-      color: blue;
-    } */
   </style>
 
-  <slot><span>Dude, hi there!</span></slot>
+  <slot><span stuff="true">Dude, hi there!</span></slot>
 
-  <span>Hello world!</span>
+  <span onclick="this.spanClicked()" stuff="true">Hello world!</span>
 </template>
 
 <script>
@@ -27,11 +20,15 @@
     static ELEMENT_NAME = 'test-component';
 
     mounted() {
-      console.log('mounted', this.q('span'));
+      console.log('mounted');
     }
 
     unmounted() {
       console.log('unmounted', arguments, this.children);
+    }
+
+    spanClicked() {
+      this.classList.toggle('red');
     }
   }
 </script>
