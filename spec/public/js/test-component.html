@@ -19,8 +19,18 @@
   class TestComponent extends Component {
     static ELEMENT_NAME = 'test-component';
 
+    get name() {
+      return 'Wyatt Greenway';
+    }
+
     mounted() {
       console.log('mounted');
+
+      this.shadow.append(...this.$(({ DIV, P }) => {
+        return DIV.class('test stuff').id('fancyID')(
+          P.class('red').dataStuff('hello')('Hello {name}!'),
+        );
+      }));
     }
 
     unmounted() {
