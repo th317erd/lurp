@@ -28,8 +28,8 @@ const config = {
       new TerserPlugin({
         parallel:       true,
         terserOptions:  {
-          keep_classnames:  true,
-          keep_fnames:      true,
+          keep_classnames:  false,
+          keep_fnames:      false,
           ecma:             2015,
           module:           true,
         },
