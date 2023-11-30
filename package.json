@@ -1,5 +1,5 @@
 {
-  "name": "lurp",
+  "name": "@mythix/mythix-ui-core",
   "version": "1.0.0",
   "description": "A different take on web development",
   "main": "lib/index.js",

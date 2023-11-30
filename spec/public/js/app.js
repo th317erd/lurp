@@ -1,4 +1,4 @@
-const { Worker, Component, Utils } = await import('./lurp/index.js');
+const { Worker, Component, Utils } = await import('./mythix-ui-core/index.js');
 
 globalThis.Utils = Utils;
 
