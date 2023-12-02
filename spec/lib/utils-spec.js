@@ -181,20 +181,20 @@ describe('Utils', () => {
     });
   });
 
-  describe('noe', () => {
+  describe('NOE', () => {
     it('works', () => {
-      expect(Utils.noe(undefined)).toBe(true);
-      expect(Utils.noe(null)).toBe(true);
-      expect(Utils.noe(NaN)).toBe(true);
-      expect(Utils.noe('')).toBe(true);
-      expect(Utils.noe('   ')).toBe(true);
-      expect(Utils.noe('   \n\r\n')).toBe(true);
+      expect(Utils.NOE(undefined)).toBe(true);
+      expect(Utils.NOE(null)).toBe(true);
+      expect(Utils.NOE(NaN)).toBe(true);
+      expect(Utils.NOE('')).toBe(true);
+      expect(Utils.NOE('   ')).toBe(true);
+      expect(Utils.NOE('   \n\r\n')).toBe(true);
 
-      expect(Utils.noe(0)).toBe(false);
-      expect(Utils.noe(true)).toBe(false);
-      expect(Utils.noe(false)).toBe(false);
-      expect(Utils.noe([])).toBe(false);
-      expect(Utils.noe({})).toBe(false);
+      expect(Utils.NOE(0)).toBe(false);
+      expect(Utils.NOE(true)).toBe(false);
+      expect(Utils.NOE(false)).toBe(false);
+      expect(Utils.NOE([])).toBe(false);
+      expect(Utils.NOE({})).toBe(false);
     });
   });
 });
