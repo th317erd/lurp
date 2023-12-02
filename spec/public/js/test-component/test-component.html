@@ -12,8 +12,8 @@
 
   <slot onslotchange="onSlotChanged"><span stuff="true">Dude, hi there!</span></slot>
 
-  <span onclick="onSpanClicked" stuff="true">Hello {{name}}!</span>
-  <span onclick="onSpanClicked" stuff="true">Did you know Mr. {{name}} that this is cool?</span>
+  <span onclick="onSpanClicked" stuff="{{data.classes}}">Hello {{data.name}}!</span>
+  <span onclick="onSpanClicked" stuff="true">Did you know Mr. {{data.name}} that this is cool?</span>
 </template>
 
 <script type="module" src="./test-component.js"></script>

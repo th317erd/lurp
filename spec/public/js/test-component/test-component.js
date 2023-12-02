@@ -10,14 +10,17 @@ export default class TestComponent extends Component {
   constructor() {
     super();
 
-    this.createDynamicProperty('name', 'Dude!');
+    this.data = this.dynamicData({
+      name:     'Dude!',
+      classes:  'wow man',
+    });
   }
 
   mounted() {
     console.log('mounted');
-    this.$(({ DIV, P }) => {
-      return DIV.class('test stuff').id('fancyID').onClick(() => console.log('DID THE THING!'))(
-        P.class('red').dataStuff('hello')('Hello {{name}}!'),
+    this.build(({ DIV, P }) => {
+      return DIV.class('{{data.classes}}').id('fancyID').onClick(() => console.log('DID THE THING!'))(
+        P.class('red').dataStuff('hello')('Hello {{data.name}}!'),
       );
     }).appendTo(this.shadow);
   }
