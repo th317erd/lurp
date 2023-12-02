@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Playground tests for components">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Playground tests for components">
+    <title>Mythix UI</title>
 
-  <title>LURP</title>
-
-  <script type="importmap">
-    {
+    <script type="importmap">
+      {
         "imports": {
           "mythix-ui-core": "/js/mythix-ui-core/index.js"
         }
       }
     </script>
 
-  <script src="./js/main.js" type="module" async></script>
-</head>
+    <script src="/js/mythix-ui-core/index.js" type="module"></script>
+  </head>
 
-<body>
-  Hello World!
-  <joy-require src="/js/test-component.html"></joy-require>
-  <test-component class="red" id="test">
-    <span>Hello!</span>
-  </test-component>
+  <body>
+    Hello World!
+    <mythix-require src="/js/test-component/test-component.html"></mythix-require>
+    <test-component class="red" id="test">
+      <span>Hello!</span>
+    </test-component>
 
-  <script>
-    setTimeout(() => {
-      let element = document.getElementById('test');
-      let newElement = element.cloneNode(true);
-      newElement.setAttribute('id', `${element.getAttribute('id')}1`);
-      document.body.appendChild(newElement);
-    }, 2500);
-  </script>
-</body>
-
+    <script>
+      setTimeout(() => {
+        let element = document.getElementById('test');
+        let newElement = element.cloneNode(true);
+        newElement.setAttribute('id', `${element.getAttribute('id')}1`);
+        document.body.appendChild(newElement);
+      }, 2500);
+    </script>
+  </body>
 </html>
