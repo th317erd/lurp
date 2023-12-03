@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="Playground tests for components">
 
     <title>Mythix UI</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,1,200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,20" rel="stylesheet" />
 
     <script type="importmap">
       {
@@ -26,11 +26,13 @@
     <mythix-require src="/js/mythix-ui-tabbed-view/mythix-ui-tabbed-view.html"></mythix-require>
 
     <mythix-tabbed-view>
-      <label slot="page1"><span class="material-symbols-outlined">search</span>Hello!</label>
+      <label slot="tab:page1"><span class="material-symbols-outlined">check</span>Hello!</label>
       <section name="page1" title="Page 1">
-        This is Page 1!
+        This is Page 1! <mythix-spinner kind="pipe"></mythix-spinner>
       </section>
+
       <section name="page2" title="Page 2">This is page 2!</section>
+
       <section name="page3" title="Page 3">Yet another page...</section>
     </mythix-tabbed-view>
   </body>

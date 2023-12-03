@@ -4,8 +4,6 @@ import * as Util            from 'node:util';
 import { matchesSnapshot }  from './snapshot.js';
 import { isPlainObject }    from '../../lib/utils.js';
 
-// const dom = new JSDOM(`<!DOCTYPE html><p>Hello world</p>`);
-
 beforeEach(function() {
   jasmine.addMatchers({
     toMatchSnapshot: function() {
