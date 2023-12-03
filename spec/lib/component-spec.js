@@ -1,6 +1,6 @@
 import * as _TestHelpers from '../support/test-helpers.js';
 
-import { MythixUIComponent }  from '../../lib/index.js';
+import { MythixUIComponent } from '../../lib/index.js';
 import { JSDOM }      from 'jsdom';
 
 describe('MythixUIComponent', () => {
@@ -28,7 +28,17 @@ describe('MythixUIComponent', () => {
   describe('compileStyleForDocument', () => {
     it('works', () => {
       let styleElement = dom.window.document.head.querySelector('style');
-      expect(MythixUIComponent.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span, span {background-color: black;}');
+      expect(MythixUIComponent.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span {background-color: black;}');
+    });
+  });
+
+  describe('classes', () => {
+    it('works', () => {
+      let test = new MythixUIComponent();
+
+      expect(test.classes('test', 'derp', 'wow')).toBe('test derp wow');
+      expect(test.classes('test', { stuff: true, otherStuff: false })).toBe('test stuff');
+      expect(test.classes('test', { stuff: true, otherStuff: false }, [ '   cool', '  bean ' ])).toBe('test stuff cool bean');
     });
   });
 });
