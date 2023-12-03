@@ -1,11 +1,10 @@
 import * as _TestHelpers from '../support/test-helpers.js';
 
-import { Component, QueryEngine }  from '../../lib/index.js';
+import { QueryEngine }  from '../../lib/index.js';
 import { JSDOM }      from 'jsdom';
 
 describe('QueryEngine', () => {
   let dom;
-  let document;
 
   beforeEach(() => {
     dom = new JSDOM(`
@@ -23,15 +22,35 @@ describe('QueryEngine', () => {
 </html>
 `.trim());
 
-    document = dom.window.document;
+    // Not great for parallel testing... I know...
+    globalThis.window = dom.window;
+    globalThis.document = window.document;
+    globalThis.Node = window.Node;
   });
 
   describe('Array methods work', () => {
+    it('[index]', () => {
+      let query = QueryEngine.from({ root: document }, 'span');
+
+      expect(document.querySelectorAll('span')[0]).toBeTruthy();
+      expect(document.querySelectorAll('span')[1]).toBeTruthy();
+      expect(document.querySelectorAll('span')[2]).toBeTruthy();
+
+      expect(query.length).toEqual(3);
+      expect(query[0]).toBe(document.querySelectorAll('span')[0]);
+      expect(query[1]).toBe(document.querySelectorAll('span')[1]);
+      expect(query[2]).toBe(document.querySelectorAll('span')[2]);
+    });
+
     it('forEach', () => {
-      let query = QueryEngine.from(document, 'span', (element) => {
+      let callCount = 0;
+
+      let query = QueryEngine.from({ root: document }, 'span', (element) => {
+        callCount++;
         return element.textContent;
       });
 
+      expect(callCount).toEqual(3);
       expect(Array.from(query)).toEqual([ 'Howdy!', 'Well hello!', 'Sweet!' ]);
     });
   });

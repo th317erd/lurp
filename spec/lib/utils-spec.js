@@ -183,6 +183,8 @@ describe('Utils', () => {
 
   describe('NOE', () => {
     it('works', () => {
+      class Test {}
+
       expect(Utils.NOE(undefined)).toBe(true);
       expect(Utils.NOE(null)).toBe(true);
       expect(Utils.NOE(NaN)).toBe(true);
@@ -193,8 +195,41 @@ describe('Utils', () => {
       expect(Utils.NOE(0)).toBe(false);
       expect(Utils.NOE(true)).toBe(false);
       expect(Utils.NOE(false)).toBe(false);
-      expect(Utils.NOE([])).toBe(false);
-      expect(Utils.NOE({})).toBe(false);
+      expect(Utils.NOE([ 0 ])).toBe(false);
+      expect(Utils.NOE({ hello: 'world' })).toBe(false);
+      expect(Utils.NOE(new Test())).toBe(false);
+      expect(Utils.NOE([])).toBe(true);
+      expect(Utils.NOE({})).toBe(true);
+    });
+  });
+
+  describe('fetch', () => {
+    it('works', () => {
+      let data = {
+        stuff: {
+          life: 42,
+        },
+        test: true,
+      };
+
+      let arr = [
+        {
+          test: 'hello',
+        },
+        1,
+        'wow',
+      ];
+
+      expect(Utils.fetch(undefined, null, null)).toBe(null);
+      expect(Utils.fetch(undefined, null, 'derp')).toBe('derp');
+      expect(Utils.fetch(data, 'test.stuff')).toBe(undefined);
+      expect(Utils.fetch(data, 'stuff2', null)).toBe(null);
+      expect(Utils.fetch(data, 'test', 'derp')).toBe(true);
+      expect(Utils.fetch(data, 'stuff', null)).toBe(data.stuff);
+      expect(Utils.fetch(data, 'stuff.life')).toBe(42);
+      expect(Utils.fetch(arr, '0.test')).toBe('hello');
+      expect(Utils.fetch(arr, '1')).toBe(1);
+      expect(Utils.fetch(arr, '2.length')).toBe(3);
     });
   });
 });

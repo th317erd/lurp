@@ -1,6 +1,6 @@
-import { Component } from 'mythix-ui-core';
+import { MythixUIComponent } from 'mythix-ui-core';
 
-export default class TestComponent extends Component {
+export default class TestComponent extends MythixUIComponent {
   static tagName = 'test-component';
 
   // get name() {

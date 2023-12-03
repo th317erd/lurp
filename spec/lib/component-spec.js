@@ -1,9 +1,9 @@
 import * as _TestHelpers from '../support/test-helpers.js';
 
-import { Component }  from '../../lib/index.js';
+import { MythixUIComponent }  from '../../lib/index.js';
 import { JSDOM }      from 'jsdom';
 
-describe('Component', () => {
+describe('MythixUIComponent', () => {
   let dom;
 
   beforeEach(() => {
@@ -18,12 +18,17 @@ describe('Component', () => {
 }
 </style></head><body></body></html>
 `.trim());
+
+    // Not great for parallel testing... I know...
+    globalThis.window = dom.window;
+    globalThis.document = window.document;
+    globalThis.Node = window.Node;
   });
 
   describe('compileStyleForDocument', () => {
     it('works', () => {
       let styleElement = dom.window.document.head.querySelector('style');
-      expect(Component.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span, span {background-color: black;}');
+      expect(MythixUIComponent.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span, span {background-color: black;}');
     });
   });
 });

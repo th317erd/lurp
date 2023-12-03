@@ -1,4 +1,4 @@
-const { Worker, Component, Utils } = await import('./mythix-ui-core/index.js');
+const { Worker, MythixUIComponent, Utils } = await import('./mythix-ui-core/index.js');
 
 globalThis.Utils = Utils;
 
@@ -11,13 +11,13 @@ const bridge = globalThis.bridge = Worker.setupBridge({
   },
 });
 
-const CustomButton = Component.create(({ props, children, useState, ref }) => {
-  return Component.Element('DIV');
+const CustomButton = MythixUIComponent.create(({ props, children, useState, ref }) => {
+  return MythixUIComponent.Element('DIV');
 }, {
   name: 'Test',
 });
 
-Component.Element.$tagName('DIV').on('click', () => {
+MythixUIComponent.Element.$tagName('DIV').on('click', () => {
 
 })();
 

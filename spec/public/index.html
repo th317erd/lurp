@@ -19,19 +19,13 @@
   </head>
 
   <body>
-    Hello World!
     <mythix-require src="/js/test-component/test-component.html"></mythix-require>
-    <test-component class="red" id="test">
-      <span>Hello!</span>
-    </test-component>
+    <mythix-require src="/js/mythix-ui-tabbed-view/mythix-ui-tabbed-view.html"></mythix-require>
 
-    <script>
-      setTimeout(() => {
-        let element = document.getElementById('test');
-        let newElement = element.cloneNode(true);
-        newElement.setAttribute('id', `${element.getAttribute('id')}1`);
-        document.body.appendChild(newElement);
-      }, 2500);
-    </script>
+    <mythix-tabbed-view>
+      <section title="Page 1">This is Page 1!</section>
+      <section title="Page 2">This is page 2!</section>
+      <section title="Another Page...">Yet another page...</section>
+    </mythix-tabbed-view>
   </body>
 </html>
