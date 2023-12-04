@@ -3,10 +3,6 @@ import { MythixUIComponent } from 'mythix-ui-core';
 export default class TestComponent extends MythixUIComponent {
   static tagName = 'test-component';
 
-  // get name() {
-  //   return 'Wyatt Greenway';
-  // }
-
   constructor() {
     super();
 
