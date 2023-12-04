@@ -39,12 +39,12 @@
     <mythix-require src="mythix-ui-tabbed-view"></mythix-require>
 
     <!-- This is a partial, using the inner content as the "waiting" content -->
-    <mythix-tabbed-view src="/partials/tabbed-view.html">
+    <mythix-tabbed-view src="/partials/tabbed-view.html?page1=stuff&page2=wow&beans=cool&cache=true">
       <mythix-spinner kind="circle" class="large"></mythix-spinner>
     </mythix-tabbed-view>
 
     <!-- This is a partial on a native element -->
-    <div data-mythix-src="/partials/tabbed-view.html" style="margin-top: 10in;">
+    <div data-mythix-src="/partials/tabbed-view.html?page1=stuff&cache=true" style="margin-top: 10in;">
       <mythix-spinner kind="circle" class="large"></mythix-spinner>
     </div>
   </body>
