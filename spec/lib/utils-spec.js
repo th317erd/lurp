@@ -203,7 +203,7 @@ describe('Utils', () => {
     });
   });
 
-  describe('fetch', () => {
+  describe('fetchPath', () => {
     it('works', () => {
       let data = {
         stuff: {
@@ -220,16 +220,16 @@ describe('Utils', () => {
         'wow',
       ];
 
-      expect(Utils.fetch(undefined, null, null)).toBe(null);
-      expect(Utils.fetch(undefined, null, 'derp')).toBe('derp');
-      expect(Utils.fetch(data, 'test.stuff')).toBe(undefined);
-      expect(Utils.fetch(data, 'stuff2', null)).toBe(null);
-      expect(Utils.fetch(data, 'test', 'derp')).toBe(true);
-      expect(Utils.fetch(data, 'stuff', null)).toBe(data.stuff);
-      expect(Utils.fetch(data, 'stuff.life')).toBe(42);
-      expect(Utils.fetch(arr, '0.test')).toBe('hello');
-      expect(Utils.fetch(arr, '1')).toBe(1);
-      expect(Utils.fetch(arr, '2.length')).toBe(3);
+      expect(Utils.fetchPath(undefined, null, null)).toBe(null);
+      expect(Utils.fetchPath(undefined, null, 'derp')).toBe('derp');
+      expect(Utils.fetchPath(data, 'test.stuff')).toBe(undefined);
+      expect(Utils.fetchPath(data, 'stuff2', null)).toBe(null);
+      expect(Utils.fetchPath(data, 'test', 'derp')).toBe(true);
+      expect(Utils.fetchPath(data, 'stuff', null)).toBe(data.stuff);
+      expect(Utils.fetchPath(data, 'stuff.life')).toBe(42);
+      expect(Utils.fetchPath(arr, '0.test')).toBe('hello');
+      expect(Utils.fetchPath(arr, '1')).toBe(1);
+      expect(Utils.fetchPath(arr, '2.length')).toBe(3);
     });
   });
 });
