@@ -20,11 +20,11 @@
       }
     </script>
     <script>
-      (globalThis.mythixUI = (globalThis.mythixUI || {})).requireResolver = (name) => {
-        if ((/^[a-zA-Z0-9_-]/).test(name))
-          return `/js/${name}`;
+      (globalThis.mythixUI = (globalThis.mythixUI || {})).urlResolver = ({ src }) => {
+        if ((/^[a-zA-Z0-9_-]/).test(src))
+          return `/js/${src}`;
 
-        return name;
+        return src;
       }
     </script>
 
