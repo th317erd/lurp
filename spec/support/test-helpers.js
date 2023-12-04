@@ -46,4 +46,5 @@ export function inspectLog(...args) {
 globalThis.HTMLElement = class HTMLElement {};
 globalThis.customElements = {
   define: () => {},
+  get:    () => {},
 };
