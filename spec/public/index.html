@@ -8,44 +8,55 @@
     <title>Mythix UI</title>
 
     <!-- StyleSheets -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,20" rel="stylesheet" />
-    <link href="/css/theme.css" rel="stylesheet" />
-    <link href="/css/main.css" rel="stylesheet" />
+    <link media="screen print" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,20" rel="stylesheet" />
+    <link media="screen" href="/css/theme.css" rel="stylesheet" />
+    <link media="screen" href="/css/main.css" rel="stylesheet" />
 
     <!-- Resolvers -->
     <script type="importmap">
       {
         "imports": {
-          "mythix-ui-core": "/js/mythix-ui-core/index.js"
+          "mythix-ui-core": "/js/mythix-ui-core/dist/index.js"
         }
       }
     </script>
     <script>
       // Resolver for <mythix-require>
-      (globalThis.mythixUI = (globalThis.mythixUI || {})).urlResolver = ({ src }) => {
+      (globalThis.mythixUI = (globalThis.mythixUI || {})).urlResolver = ({ src, path, fileName }) => {
         if ((/^[a-zA-Z0-9_-]/).test(src))
-          return `/js/${src}`;
+          return `/js/${path}/dist/${fileName}`;
 
         return src;
       }
     </script>
 
     <!-- Mythix UI -->
-    <script src="/js/mythix-ui-core/index.js" type="module"></script>
+    <script src="/js/mythix-ui-core/dist/index.js" type="module"></script>
   </head>
 
   <body>
-    <!-- Require anything we want, with resolvers -->
-    <mythix-require src="mythix-ui-tabbed-view"></mythix-require>
+    <mythix-language-provider>
+      <source lang="en" type="lang/json" src="/lang/en.json">
+      <source lang="es" type="lang/json" src="/lang/es.json">
 
-    <!-- This is a partial, using the inner content as the "waiting" content -->
-    <mythix-tabbed-view src="/partials/tabbed-view.html?page1=stuff&page2=wow&beans=cool&cache=true">
-      <mythix-spinner kind="circle" class="large"></mythix-spinner>
-    </mythix-tabbed-view>
+      <!-- Require anything we want, with resolvers -->
+      <mythix-require src="mythix-ui-modal"></mythix-require>
+      <mythix-require src="mythix-ui-tabbed-view"></mythix-require>
+      <mythix-require src="test-component"></mythix-require>
 
-    <!-- This is a partial on a native element -->
-    <div data-mythix-src="/partials/tabbed-view.html?page1=stuff&cache=true" style="margin-top: 10in;">
-      <mythix-spinner kind="circle" class="large"></mythix-spinner>
-    </div>
+      <button onclick="$Q('#modal').showModal()">Open Modal</button>
+      <mythix-modal id="modal" autoclose>
+        <button slot="footer">Okay!</button>
+        <button slot="header-buttons">X</button>
+        Aliqua nostrud laboris tempor excepteur eiusmod non irure in exercitation cillum cillum minim veniam cillum. Est quis tempor officia ut. Fugiat elit et culpa cillum elit commodo. Esse excepteur est esse nisi sint culpa ipsum mollit laborum eiusmod labore id. Excepteur voluptate laboris veniam nisi consequat qui quis consectetur.
+      </mythix-modal>
+
+      <!-- This is a partial, using the inner content as the "waiting" content -->
+      <mythix-tabbed-view src="/partials/tabbed-view.html?page1=stuff&page2=wow&beans=cool&cache=true">
+        <mythix-spinner kind="circle" class="large"></mythix-spinner>
+      </mythix-tabbed-view>
+
+      <test-component></test-component>
+    </mythix-language-provider>
   </body>
 </html>
