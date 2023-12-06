@@ -7,6 +7,12 @@
 
     <title>Mythix UI</title>
 
+    <style>
+      .phantom:not(.mythix-ready) {
+        visibility: hidden !important;
+      }
+    </style>
+
     <!-- StyleSheets -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,20" rel="stylesheet" />
     <link media="screen" href="/css/theme.css" rel="stylesheet" />
@@ -34,7 +40,7 @@
     <script src="/js/mythix-ui-core/dist/index.js" type="module"></script>
   </head>
 
-  <body>
+  <body class="phantom">
     <mythix-language-provider>
       <source lang="en" type="lang/json" src="/lang/en.json">
       <source lang="es" type="lang/json" src="/lang/es.json">
@@ -45,7 +51,7 @@
       <mythix-require src="test-component"></mythix-require>
 
       <button onclick="$('#modal').showModal()">Open Modal</button>
-      <mythix-prompt-modal onclose="console.log('DANG!', this.returnValue, typeof this.returnValue)" id="modal" autoclose>
+      <mythix-prompt-modal class="phantom" id="modal" autoclose>
         <!-- <button slot="footer">Hello world!</button>
         <button slot="footer">@@$$.i18n('Mythix.MythixModal.Prompt.confirmButton.caption', 'Yes')@@</button>
         <button slot="header-buttons">X</button> -->
@@ -53,11 +59,13 @@
       </mythix-prompt-modal>
 
       <!-- This is a partial, using the inner content as the "waiting" content -->
-      <mythix-tabbed-view data-mythix-src="/partials/tabbed-view.html?page1=stuff&page2=wow&beans=cool&cache=true">
+      <mythix-tabbed-view class="phantom" data-mythix-src="/partials/tabbed-view.html?page1=stuff&page2=wow&beans=cool&cache=true">
         <mythix-spinner kind="circle" class="large"></mythix-spinner>
       </mythix-tabbed-view>
 
       <test-component></test-component>
+
+      <div class="phantom" data-mythix-src="./partials/tabbed-view.html?page1=wow&page2=derp"></div>
     </mythix-language-provider>
   </body>
 </html>
