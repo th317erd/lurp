@@ -123,6 +123,21 @@ describe('Utils', () => {
     });
   });
 
+  describe('toCamelCase', () => {
+    it('works', () => {
+      expect(Utils.toCamelCase('derp-thing-stuff')).toBe('derpThingStuff');
+      expect(Utils.toCamelCase('--derp-thing-stuff#$#')).toBe('derpThingStuff');
+    });
+  });
+
+  describe('toSnakeCase', () => {
+    it('works', () => {
+      expect(Utils.toSnakeCase('derpThingStuff')).toBe('derp-thing-stuff');
+      expect(Utils.toSnakeCase('DerpThingStuff')).toBe('derp-thing-stuff');
+    });
+  });
+
+
   describe('isPrimitive', () => {
     it('works', () => {
       class Test {}

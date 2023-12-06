@@ -26,6 +26,7 @@ describe('QueryEngine', () => {
     globalThis.window = dom.window;
     globalThis.document = window.document;
     globalThis.Node = window.Node;
+    globalThis.HTMLElement = window.HTMLElement;
   });
 
   describe('Array methods work', () => {
