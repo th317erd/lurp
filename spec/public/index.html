@@ -45,12 +45,12 @@
       <mythix-require src="test-component"></mythix-require>
 
       <button onclick="$('#modal').showModal()">Open Modal</button>
-      <mythix-alert-modal id="modal" autoclose>
+      <mythix-prompt-modal onclose="console.log('DANG!', this.returnValue, typeof this.returnValue)" id="modal" autoclose>
         <!-- <button slot="footer">Hello world!</button>
         <button slot="footer">@@$$.i18n('Mythix.MythixModal.Prompt.confirmButton.caption', 'Yes')@@</button>
         <button slot="header-buttons">X</button> -->
         Aliqua nostrud laboris tempor excepteur eiusmod non irure in exercitation cillum cillum minim veniam cillum. Est quis tempor officia ut. Fugiat elit et culpa cillum elit commodo. Esse excepteur est esse nisi sint culpa ipsum mollit laborum eiusmod labore id. Excepteur voluptate laboris veniam nisi consequat qui quis consectetur.
-      </mythix-alert-modal>
+      </mythix-prompt-modal>
 
       <!-- This is a partial, using the inner content as the "waiting" content -->
       <mythix-tabbed-view data-mythix-src="/partials/tabbed-view.html?page1=stuff&page2=wow&beans=cool&cache=true">
