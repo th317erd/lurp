@@ -1,5 +1,9 @@
 {
   "Mythix": {
+    "Search": {
+      "placeholder": "Búsqueda...",
+      "buttonCaption": "Búsqueda"
+    },
     "MythixModal": {
       "header": {
         "caption": "Diálogo"

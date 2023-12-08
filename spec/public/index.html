@@ -26,31 +26,48 @@
         }
       }
     </script>
+
+    <!-- Mythix UI -->
+    <script src="/js/mythix-ui-core/dist/index.js" type="module"></script>
     <script>
+      const mythixUI    = (globalThis.mythixUI = (globalThis.mythixUI || {}));
+      const globalScope = mythixUI.globalScope = (mythixUI.globalScope || {});
+
       // Resolver for <mythix-require>
-      (globalThis.mythixUI = (globalThis.mythixUI || {})).urlResolver = ({ src, path, fileName }) => {
+      mythixUI.urlResolver = ({ src, path, fileName }) => {
         if ((/^[a-zA-Z0-9_-]/).test(src))
           return `/js/${path}/dist/${fileName}`;
 
         return src;
       }
-    </script>
 
-    <!-- Mythix UI -->
-    <script src="/js/mythix-ui-core/dist/index.js" type="module"></script>
+      globalScope.fetchSearchItems = (...args) => {
+        console.log('Fetch items!', args);
+
+        return [ 'derp' ];
+      };
+
+      globalScope.receiveSearchItems = ({ items }) => {
+        console.log('Receive items!', items);
+        return items;
+      };
+    </script>
   </head>
 
   <body class="phantom">
+    <!-- Require anything we want, with resolvers -->
+    <mythix-require src="mythix-ui-modal"></mythix-require>
+    <mythix-require src="mythix-ui-tabbed-view"></mythix-require>
+    <mythix-require src="mythix-ui-search"></mythix-require>
+    <mythix-require src="test-component"></mythix-require>
+
     <mythix-language-provider>
       <source lang="en" type="lang/json" src="/lang/en.json">
       <source lang="es" type="lang/json" src="/lang/es.json">
 
-      <!-- Require anything we want, with resolvers -->
-      <mythix-require src="mythix-ui-modal"></mythix-require>
-      <mythix-require src="mythix-ui-tabbed-view"></mythix-require>
-      <mythix-require src="test-component"></mythix-require>
+      <mythix-search name="searchField" placeholder="Search..." autosubmit="500"></mythix-search>
 
-      <button onclick="$('#modal').showModal()">Open Modal</button>
+      <button onclick="$('#modal').showModal()">Open Modal @@$$.dynamicPropID('searchField')@@</button>
       <mythix-prompt-modal class="phantom" id="modal" autoclose>
         <!-- <button slot="footer">Hello world!</button>
         <button slot="footer">@@$$.i18n('Mythix.MythixModal.Prompt.confirmButton.caption', 'Yes')@@</button>

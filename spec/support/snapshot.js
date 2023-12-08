@@ -88,6 +88,8 @@ function serialize(value) {
     return ((value.constructor && value.constructor.name) || 'Object');
   };
 
+  const alreadyVisited = new Set();
+
   const mutate = (value) => {
     if (!value)
       return value;
@@ -95,6 +97,11 @@ function serialize(value) {
     let thisType = typeof value;
     if (thisType !== 'object')
       return value;
+
+    if (alreadyVisited.has(value))
+      return value;
+
+    alreadyVisited.add(value);
 
     if (typeof value.valueOf === 'function' && typeof value.valueOf() !== 'object')
       return value;

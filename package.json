@@ -14,6 +14,7 @@
     "test-watch": "watch 'clear ; node ./node_modules/.bin/jasmine' . --wait=2 --interval=1 '--ignoreDirectoryPattern=/node_modules|mythix-ui-core/'",
     "build": "./node_modules/.bin/webpack",
     "build-watch": "watch 'clear ; ./node_modules/.bin/webpack' . --wait=2 --interval=1 '--ignoreDirectoryPattern=/node_modules|mythix-ui-core/'",
+    "build-production": "NODE_ENV=production ./node_modules/.bin/webpack",
     "prepublishOnly": "NODE_ENV=production ./node_modules/.bin/webpack"
   },
   "keywords": [
