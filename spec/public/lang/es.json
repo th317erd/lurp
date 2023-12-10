@@ -17,6 +17,9 @@
         }
       },
       "Prompt": {
+        "header": {
+          "caption": "Inmediato"
+        },
         "confirmButton": {
           "caption": "Sí"
         },

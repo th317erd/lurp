@@ -17,6 +17,9 @@
         }
       },
       "Prompt": {
+        "header": {
+          "caption": "Prompt"
+        },
         "confirmButton": {
           "caption": "Yes"
         },
