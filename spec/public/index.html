@@ -27,6 +27,16 @@
       }
     </script>
 
+    <script>
+      document.addEventListener('mythix-ready', () => {
+        console.log('Mythix is ready!');
+      });
+
+      // document.addEventListener('mythix-component-registered', (event) => {
+      //   console.log('Registered a new component: ', event.componentName, event.component);
+      // });
+    </script>
+
     <!-- Mythix UI -->
     <script src="/js/mythix-ui-core/dist/index.js" type="module"></script>
     <script>
