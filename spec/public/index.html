@@ -45,8 +45,8 @@
 
       // Resolver for <mythix-require>
       mythixUI.urlResolver = ({ src, path, fileName }) => {
-        if ((/^[a-zA-Z0-9_-]/).test(src))
-          return `/js/${path}/dist/${fileName}`;
+        if ((/^[a-zA-Z0-9_-]+$/).test(src))
+          return `/js/${path}dist/${fileName}`;
 
         return src;
       }
@@ -63,7 +63,7 @@
           'yes sir',
           'awesome!',
         ].filter((value) => {
-          if (mythixUI.Utils.NOE(searchStr))
+          if (mythixUI.Utils.isNOE(searchStr))
             return true;
 
           return (value.toLowerCase().indexOf(searchStr) >= 0);
@@ -81,8 +81,8 @@
     <mythix-require src="test-component"></mythix-require>
 
     <mythix-language-provider>
-      <source lang="en" type="lang/json" src="/lang/en.json">
-      <source lang="es" type="lang/json" src="/lang/es.json">
+      <mythix-language-pack lang="en" src="/lang/en.json"></mythix-language-pack>
+      <mythix-language-pack lang="es" src="/lang/es.json"></mythix-language-pack>
 
       @@i18n('Mythix.Search.placeholder', 'Fallback')@@
 

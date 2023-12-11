@@ -50,5 +50,8 @@
     "exclude": [
       "spec/**"
     ]
+  },
+  "dependencies": {
+    "deepmerge": "^4.3.1"
   }
 }
