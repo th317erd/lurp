@@ -1,0 +1,13 @@
+root: ./
+include:
+  - "**/lib/**/*.js"
+
+exclude:
+  - "**/node_modules/**"
+  - "**/spec/**"
+  - "**/dist/**"
+
+outputFormat: json
+output: ./dist/docs/mythix-ui-core.json
+props:
+  repo: https://github.com/th317erd/mythix-ui-core
