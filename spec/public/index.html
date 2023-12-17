@@ -51,7 +51,7 @@
         return src;
       }
 
-      globalScope.fetchSearchItems = ({ value }) => {
+      globalScope.fetchSearchItems = function({ value }) {
         let searchStr = (value || '').toLowerCase();
 
         return [
@@ -86,7 +86,7 @@
 
       @@i18n('Mythix.Search.placeholder', 'Fallback')@@
 
-      <mythix-search items="test stuff thing dude wow cool beans" id="searchField" action="fetchSearchItems" placeholder="Search..." autosubmit="1"></mythix-search>
+      <mythix-search id="searchField" action="fetchSearchItems" placeholder="Search..." autosubmit="1"></mythix-search>
       <mythix-for-each of="%searchFieldItems">
         <p>
           <span>Key (@@key@@):</span>
