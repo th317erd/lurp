@@ -60,6 +60,9 @@ module.exports = {
             ip.lineNumber = Parser.getLineNumber(source, index);
         }
 
+        if (!ip.name)
+          ip.searchable = false;
+
         return ip;
       });
     }
