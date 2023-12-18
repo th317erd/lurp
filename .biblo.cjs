@@ -37,7 +37,7 @@ module.exports = {
   props: {
     repo: "https://github.com/th317erd/mythix-ui-core",
   },
-  blockProcessor: ({ scope }) => {
+  blockProcessor: ({ scope, source, Parser }) => {
     if (scope.desc)
       scope.desc = convert(scope.desc);
 
@@ -46,14 +46,39 @@ module.exports = {
 
     if (scope.instanceProperties) {
       scope.instanceProperties = scope.instanceProperties.map((item) => {
-        return {
+        let ip = {
           ...item,
-          caption: convert(item.caption),
-          desc: convert(item.desc),
+          caption:  convert(item.caption),
+          desc:     convert(item.desc),
+          type:     'Property',
+          parent:   scope,
         };
+
+        if (item.name && !Object.prototype.hasOwnProperty.call(ip, 'lineNumber')) {
+          let index = source.indexOf(`// @ref:${item.name}`);
+          if (index >= 0)
+            ip.lineNumber = Parser.getLineNumber(source, index);
+        }
+
+        return ip;
       });
     }
 
     return scope;
+  },
+  postProcess: ({ data, Parser }) => {
+    return data.concat(...data.map((scope) => {
+      let result = scope.instanceProperties || [];
+      scope.instanceProperties = undefined;
+      return result.map((ip) => {
+        let block = {
+          ...ip,
+        };
+
+        block.id = Parser.calculateBlockID(block);
+
+        return block;
+      });
+    }));
   },
 };
