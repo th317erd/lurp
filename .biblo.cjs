@@ -22,6 +22,19 @@ function convert(content) {
   return result;
 }
 
+function getKeyValue(str) {
+  let key   = 'name';
+  let value = str;
+
+  let index = str.indexOf(':');
+  if (index >= 0) {
+    key = str.substring(0, index);
+    value = str.substring(index + 1);
+  }
+
+  return [ key, value ];
+}
+
 module.exports = {
   root: "./",
   include: [
@@ -44,35 +57,63 @@ module.exports = {
     if (scope.examples)
       scope.examples = scope.examples.map(convert);
 
+    if (scope.arguments) {
+      scope.arguments = scope.arguments.map((item) => {
+        let argument = {
+          ...item,
+          caption:    convert(item.caption),
+          desc:       convert(item.desc),
+          type:       'Argument',
+          parent:     `id:${scope.id}`,
+          searchable: false,
+        };
+
+        if (item.name && !Object.prototype.hasOwnProperty.call(argument, 'lineNumber'))
+          item.lineNumber = scope.lineNumber;
+
+        return argument;
+      });
+    }
+
     if (scope.instanceProperties) {
       scope.instanceProperties = scope.instanceProperties.map((item) => {
-        let ip = {
+        let property = {
           ...item,
           caption:  convert(item.caption),
           desc:     convert(item.desc),
           type:     'Property',
-          parent:   scope,
+          parent:   `id:${scope.id}`,
         };
 
-        if (item.name && !Object.prototype.hasOwnProperty.call(ip, 'lineNumber')) {
+        if (item.name && !Object.prototype.hasOwnProperty.call(property, 'lineNumber')) {
           let index = source.indexOf(`// @ref:${item.name}`);
           if (index >= 0)
-            ip.lineNumber = Parser.getLineNumber(source, index);
+            property.lineNumber = Parser.getLineNumber(source, index);
         }
 
-        if (!ip.name)
-          ip.searchable = false;
+        if (!property.name)
+          property.searchable = false;
 
-        return ip;
+        return property;
       });
     }
 
     return scope;
   },
-  postProcess: ({ data, Parser }) => {
-    return data.concat(...data.map((scope) => {
-      let result = scope.instanceProperties || [];
-      scope.instanceProperties = undefined;
+  postProcess: ({ scopes, Parser, Utils }) => {
+    return scopes.concat(...scopes.map((scope) => {
+      if (Utils.isType(scope.parent, 'String') && scope.parent) {
+        let [ key, value ] = getKeyValue(scope.parent);
+        let parent = scopes.find((scope) => (scope[key] === value));
+
+        if (parent)
+          scope.parent = `id:${parent.id}`;
+      }
+
+      return scope;
+    }).map((block) => {
+      let result = block.instanceProperties || [];
+      block.instanceProperties = undefined;
       return result.map((ip) => {
         let block = {
           ...ip,
