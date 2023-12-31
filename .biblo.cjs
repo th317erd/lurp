@@ -92,7 +92,7 @@ function _convert({ scope, source, Parser }, _content) {
       })
       .replace(/\bMutationRecord\b/g, '[MutationRecord](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord)')
       .replace(/\bElement\b/g, '[Element](https://developer.mozilla.org/en-US/docs/Web/API/element)')
-      .replace(/\bNode\b/g, '[Node](https://developer.mozilla.org/en-US/docs/Web/API/Node)');
+      .replace(/\b(Node|ShadowRoot)\b/g, '[$1](https://developer.mozilla.org/en-US/docs/Web/API/$1)');
   };
 
   const helpers = (content) => {
@@ -118,6 +118,8 @@ function _convert({ scope, source, Parser }, _content) {
         lineNumber = Parser.getLineNumber(source, offset);
 
       return `<a class="source-control-link" href="${scope.repoLink}#L${lineNumber || 1}" target="_blank"><span class="material-symbols-outlined">arrow_outward</span></a>`;
+    }).replace(/@types\s+([^;]+);/g, (m, types) => {
+      return `<span class="data-type">${mdnReferences(types.trim())}</span>`;
     });
   };
 
