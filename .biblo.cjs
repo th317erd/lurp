@@ -1,4 +1,9 @@
-const showdown  = require('showdown');
+const { URL }     = require('url');
+const showdown    = require('showdown');
+const entities    = require('entities');
+const htmlparser2 = require('htmlparser2');
+const renderHTML  = require('dom-serializer').default;
+
 const converter = new showdown.Converter({
   ghCompatibleHeaderId:     true,
   parseImgDimensions:       true,
@@ -10,11 +15,6 @@ const converter = new showdown.Converter({
   backslashEscapesHTMLTags: true,
   emoji:                    true,
 });
-
-const htmlparser2 = require('htmlparser2');
-const renderHTML = require('dom-serializer').default;
-
-const entities = require('entities');
 
 const RENDER_HTML_OPTIONS = {
   encodeEntities:   false,
@@ -60,7 +60,7 @@ function encodeValue(value) {
   });
 }
 
-function _convert({ scope }, _content) {
+function _convert({ scope, source, Parser }, _content) {
   let content = _content;
   if (!content)
     return;
@@ -91,13 +91,33 @@ function _convert({ scope }, _content) {
         return `[${p}](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${p})`;
       })
       .replace(/\bMutationRecord\b/g, '[MutationRecord](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord)')
-      .replace(/\bElement\b/g, '[Element](https://developer.mozilla.org/en-US/docs/Web/API/element)');
+      .replace(/\bElement\b/g, '[Element](https://developer.mozilla.org/en-US/docs/Web/API/element)')
+      .replace(/\bNode\b/g, '[Node](https://developer.mozilla.org/en-US/docs/Web/API/Node)');
   };
 
   const helpers = (content) => {
     return content.replace(/@see\s+([^;]+);/g, (m, p) => {
-      let value = p.trim();
-      return `[\`${value}\`](/?search=${encodeURIComponent(`name:${value}`)})`;
+      let value   = p.trim();
+      let caption = value;
+      let url     = new URL(`https://see.command/${value}`);
+
+      if (url.searchParams && url.searchParams.has('caption'))
+        caption = url.searchParams.get('caption');
+
+      return `[\`${caption}\`](/?search=${encodeURIComponent(`name:${value}`)})`;
+    }).replace(/@sourceRef\s+([^;]+);/g, (m, p) => {
+      const findOffsetOfRef = (name) => {
+        return source.indexOf(`// @ref:${name}`);
+      };
+
+      let value   = p.trim();
+      let offset  = findOffsetOfRef(value);
+      let lineNumber;
+
+      if (offset >= 0)
+        lineNumber = Parser.getLineNumber(source, offset);
+
+      return `<a class="source-control-link" href="${scope.repoLink}#L${lineNumber || 1}" target="_blank"><span class="material-symbols-outlined">arrow_outward</span></a>`;
     });
   };
 
@@ -158,9 +178,11 @@ module.exports = {
   props: {
     repo: "https://github.com/th317erd/mythix-ui-core",
   },
-  blockProcessor: ({ scope, source, Parser }) => {
+  blockProcessor: (context) => {
+    let { scope, source, Parser } = context;
+
     const convert = (content) => {
-      return _convert({ scope }, content);
+      return _convert(context, content);
     };
 
     const convertDesc = (desc) => {
