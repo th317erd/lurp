@@ -85,8 +85,8 @@ function _convert({ scope, source, Parser }, _content) {
 
   const mdnReferences = (content) => {
     return content
-      .replace(/\[(.+)\]\(([^)]+)\)/g, (m, caption, url) => addTag(m, { caption, url }))
-      // .replace(/[^\sa-zA-Z0-9_-]/g, (m) => addTag(m))
+      .replace(/(?<!`)`[^`]+?`/g, (m) => addTag(m))
+      .replace(/\[(.+?)\]\(([^)]+?)\)/g, (m, caption, url) => addTag(m, { caption, url }))
       .replace(/\b(Promise|Map)\b/g, (m, p) => {
         return `[${p}](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${p})`;
       })
@@ -96,7 +96,7 @@ function _convert({ scope, source, Parser }, _content) {
   };
 
   const helpers = (content) => {
-    return content.replace(/@see\s+([^;]+);/g, (m, p) => {
+    return content.replace(/@see\s+([^;]+?);/g, (m, p) => {
       let value   = p.trim();
       let caption = value;
       let url     = new URL(`https://see.command/${value}`);
@@ -105,7 +105,7 @@ function _convert({ scope, source, Parser }, _content) {
         caption = url.searchParams.get('caption');
 
       return `[\`${caption}\`](/?search=${encodeURIComponent(`name:${value}`)})`;
-    }).replace(/@sourceRef\s+([^;]+);/g, (m, p) => {
+    }).replace(/@sourceRef\s+([^;]+?);/g, (m, p) => {
       const findOffsetOfRef = (name) => {
         return source.indexOf(`// @ref:${name}`);
       };
@@ -118,7 +118,7 @@ function _convert({ scope, source, Parser }, _content) {
         lineNumber = Parser.getLineNumber(source, offset);
 
       return `<a class="source-control-link" href="${scope.repoLink}#L${lineNumber || 1}" target="_blank"><span class="material-symbols-outlined">arrow_outward</span></a>`;
-    }).replace(/@types\s+([^;]+);/g, (m, types) => {
+    }).replace(/@types\s+([^;]+?);/g, (m, types) => {
       return `<span class="data-type">${mdnReferences(types.trim())}</span>`;
     });
   };
@@ -252,9 +252,14 @@ module.exports = {
         };
 
         if (item.name && !Object.prototype.hasOwnProperty.call(property, 'lineNumber')) {
-          let index = source.indexOf(`// @ref:${item.name}`);
+          let parentName  = scope.name || scope.groupName;
+          let refText     = `// @ref:${(parentName) ? `${parentName}.` : ''}${item.name}`;
+          let index       = source.indexOf(refText);
+
           if (index >= 0)
             property.lineNumber = Parser.getLineNumber(source, index);
+          else
+            console.log('REF NOT FOUND!', refText);
         }
 
         if (!property.name)
@@ -295,7 +300,7 @@ module.exports = {
   postProcess: ({ scopes, Parser, Utils }) => {
     return scopes.concat(...scopes.map((scope) => {
       // Non-property scopes
-      if (Utils.isType(scope.parent, 'String') && scope.parent) {
+      if (Utils.isType(scope.parent, '::String') && scope.parent) {
         let referenceID = findReferenceID(scopes, scope.parent)
         if (referenceID)
           scope.parent = referenceID;
