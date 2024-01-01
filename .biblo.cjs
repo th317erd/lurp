@@ -241,8 +241,8 @@ module.exports = {
       });
     };
 
-    const convertInstanceProperties = (instanceProperties) => {
-      return instanceProperties.map((item) => {
+    const convertInstanceProperties = (properties) => {
+      return properties.map((item) => {
         let property = {
           ...item,
           caption:  convert(item.caption),
@@ -284,8 +284,8 @@ module.exports = {
     if (scope.notes)
       scope.notes = convertNotes(scope.notes);
 
-    if (scope.instanceProperties)
-      scope.instanceProperties = convertInstanceProperties(scope.instanceProperties);
+    if (scope.properties)
+      scope.properties = convertInstanceProperties(scope.properties);
 
     if (scope.return)
       scope.return = convertReturn(scope.return);
@@ -304,8 +304,8 @@ module.exports = {
       return scope;
     }).map((scope) => {
       // Property scopes
-      let properties = scope.instanceProperties || [];
-      scope.instanceProperties = undefined;
+      let properties = scope.properties || [];
+      scope.properties = undefined;
 
       return properties.map((ip) => {
         let block = {
