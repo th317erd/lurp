@@ -30,6 +30,7 @@ describe('Utils', () => {
       expect(Utils.isPlainObject(new Array())).toBe(false);
       expect(Utils.isPlainObject(new Map())).toBe(false);
       expect(Utils.isPlainObject(new Test())).toBe(false);
+      expect(Utils.isPlainObject([])).toBe(false);
       expect(Utils.isPlainObject(new Object())).toBe(true);
       expect(Utils.isPlainObject({})).toBe(true);
       expect(Utils.isPlainObject(Object.create(null))).toBe(true);
@@ -122,6 +123,16 @@ describe('Utils', () => {
       expect(Utils.isType(JSON, 'Class', 'Object')).toBe(false);
       expect(Utils.isType(JSON, 'Class', 'Object', '::JSON')).toBe(true);
       expect(Utils.isType(2.0, 'Class', 'Object', '::Number')).toBe(true);
+    });
+
+    it('works with classes', () => {
+      expect(Utils.isType(2.0, Number)).toBe(true);
+      expect(Utils.isType('2.0', Number)).toBe(false);
+      expect(Utils.isType(2n, Number)).toBe(false);
+      expect(Utils.isType(2n, BigInt)).toBe(true);
+      expect(Utils.isType(true, Boolean)).toBe(true);
+      expect(Utils.isType(false, Boolean)).toBe(true);
+      expect(Utils.isType('test', String)).toBe(true);
     });
   });
 

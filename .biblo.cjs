@@ -120,6 +120,15 @@ function _convert({ scope, source, Parser }, _content) {
       return `<a class="source-control-link" href="${scope.repoLink}#L${lineNumber || 1}" target="_blank"><span class="material-symbols-outlined">arrow_outward</span></a>`;
     }).replace(/@types\s+([^;]+?);/g, (m, types) => {
       return `<span class="data-type">${mdnReferences(types.trim())}</span>`;
+    }).replace(/:(\w+?):/g, (m, name) => {
+      let emojis = {
+        'eye':      '👁️',
+        'warning':  '⚠️',
+        'info':     'ℹ️',
+        'heart':    '❤️',
+      };
+
+      return emojis[name] || m;
     });
   };
 
