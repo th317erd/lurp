@@ -85,9 +85,10 @@ function _convert({ scope, source, Parser }, _content) {
 
   const mdnReferences = (content) => {
     return content
-      .replace(/(?<!`)`[^`]+?`/g, (m) => addTag(m))
+      .replace(/```(?:\\`|[\s\S])+?```/g, (m) => addTag(m))
+      .replace(/`(?:\\`|[\s\S])+?`/g, (m) => addTag(m))
       .replace(/\[(.+?)\]\(([^)]+?)\)/g, (m, caption, url) => addTag(m, { caption, url }))
-      .replace(/\b(Promise|Map)\b/g, (m, p) => {
+      .replace(/\b(Promise|Map|WeakMap|Set|WeakSet|WeakRef|BigInt)\b/g, (m, p) => {
         return `[${p}](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${p})`;
       })
       .replace(/\bMutationRecord\b/g, '[MutationRecord](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord)')
@@ -250,40 +251,44 @@ module.exports = {
       });
     };
 
+    const convertProperty = (item) => {
+      let property = {
+        ...item,
+        caption:  convert(item.caption),
+        desc:     convert(item.desc),
+        type:     'Property',
+      };
+
+      if (scope !== item)
+        property.parent = `id:${scope.id}`;
+
+      if (item.name && !Object.prototype.hasOwnProperty.call(property, 'lineNumber')) {
+        let parentName  = scope.name || scope.groupName;
+        let refText     = `// @ref:${(parentName) ? `${parentName}.` : ''}${item.name}`;
+        let index       = source.indexOf(refText);
+
+        if (index >= 0)
+          property.lineNumber = Parser.getLineNumber(source, index);
+        else
+          console.log('REF NOT FOUND!', refText);
+      }
+
+      if (!property.name)
+        property.searchable = false;
+
+      if (property.dataType)
+        property.dataTypes = convertDataTypes(property.dataType);
+      else if (property.dataTypes)
+        property.dataTypes = convertDataTypes(property.dataTypes);
+
+      if (property.notes)
+        property.notes = convertNotes(property.notes);
+
+      return property;
+    };
+
     const convertInstanceProperties = (properties) => {
-      return properties.map((item) => {
-        let property = {
-          ...item,
-          caption:  convert(item.caption),
-          desc:     convert(item.desc),
-          type:     'Property',
-          parent:   `id:${scope.id}`,
-        };
-
-        if (item.name && !Object.prototype.hasOwnProperty.call(property, 'lineNumber')) {
-          let parentName  = scope.name || scope.groupName;
-          let refText     = `// @ref:${(parentName) ? `${parentName}.` : ''}${item.name}`;
-          let index       = source.indexOf(refText);
-
-          if (index >= 0)
-            property.lineNumber = Parser.getLineNumber(source, index);
-          else
-            console.log('REF NOT FOUND!', refText);
-        }
-
-        if (!property.name)
-          property.searchable = false;
-
-        if (property.dataType)
-          property.dataTypes = convertDataTypes(property.dataType);
-        else if (property.dataTypes)
-          property.dataTypes = convertDataTypes(property.dataTypes);
-
-        if (property.notes)
-          property.notes = convertNotes(property.notes);
-
-        return property;
-      });
+      return properties.map(convertProperty);
     };
 
     if (scope.desc)
@@ -304,6 +309,9 @@ module.exports = {
     if (scope.return)
       scope.return = convertReturn(scope.return);
 
+    if (scope.type === 'Property')
+      return convertProperty(scope);
+
     return scope;
   },
   postProcess: ({ scopes, Parser, Utils }) => {
@@ -321,9 +329,9 @@ module.exports = {
       let properties = scope.properties || [];
       scope.properties = undefined;
 
-      return properties.map((ip) => {
+      return properties.map((property) => {
         let block = {
-          ...ip,
+          ...property,
         };
 
         block.id = Parser.calculateBlockID(block);
@@ -332,11 +340,11 @@ module.exports = {
       });
     })).flat(Infinity).map((scope) => {
       // All scopes
-      if (Utils.isNotNOE(scope.see)) {
-        scope.see = ([].concat(scope.see).filter(Boolean).flat(Infinity).map((seeRef) => {
-          return findReferenceID(scopes, seeRef);
-        })).filter(Boolean);
-      }
+      // if (Utils.isNotNOE(scope.see)) {
+      //   scope.see = ([].concat(scope.see).filter(Boolean).flat(Infinity).map((seeRef) => {
+      //     return findReferenceID(scopes, seeRef);
+      //   })).filter(Boolean);
+      // }
 
       return scope;
     }).filter(Boolean);

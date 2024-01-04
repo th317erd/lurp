@@ -145,8 +145,15 @@ describe('Utils', () => {
 
   describe('toSnakeCase', () => {
     it('works', () => {
-      expect(Utils.toSnakeCase('derpThingStuff')).toBe('derp-thing-stuff');
-      expect(Utils.toSnakeCase('DerpThingStuff')).toBe('derp-thing-stuff');
+      expect(Utils.toSnakeCase('derp_ThingStuff')).toBe('derp_thing_stuff');
+      expect(Utils.toSnakeCase('DerpThingStuff')).toBe('derp_thing_stuff');
+    });
+  });
+
+  describe('toKebabCase', () => {
+    it('works', () => {
+      expect(Utils.toKebabCase('derp-ThingStuff')).toBe('derp-thing-stuff');
+      expect(Utils.toKebabCase('DerpThingStuff')).toBe('derp-thing-stuff');
     });
   });
 
@@ -164,7 +171,7 @@ describe('Utils', () => {
       expect(Utils.isPrimitive(NaN)).toBe(false);
       expect(Utils.isPrimitive(Infinity)).toBe(false);
       expect(Utils.isPrimitive(-Infinity)).toBe(false);
-      expect(Utils.isPrimitive(Symbol.for('test'))).toBe(false);
+      expect(Utils.isPrimitive(Symbol.for('test'))).toBe(true);
       expect(Utils.isPrimitive(new Test())).toBe(false);
       expect(Utils.isPrimitive(2n)).toBe(true);
       expect(Utils.isPrimitive(BigInt(2))).toBe(true);
