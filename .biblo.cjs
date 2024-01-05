@@ -88,7 +88,7 @@ function _convert({ scope, source, Parser }, _content) {
       .replace(/```(?:\\`|[\s\S])+?```/g, (m) => addTag(m))
       .replace(/`(?:\\`|[\s\S])+?`/g, (m) => addTag(m))
       .replace(/\[(.+?)\]\(([^)]+?)\)/g, (m, caption, url) => addTag(m, { caption, url }))
-      .replace(/\b(Promise|Map|WeakMap|Set|WeakSet|WeakRef|BigInt)\b/g, (m, p) => {
+      .replace(/\b(Proxy|Promise|Map|WeakMap|Set|WeakSet|WeakRef|BigInt)\b/g, (m, p) => {
         return `[${p}](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${p})`;
       })
       .replace(/\bMutationRecord\b/g, '[MutationRecord](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord)')
