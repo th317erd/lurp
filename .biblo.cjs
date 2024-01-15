@@ -101,11 +101,12 @@ function _convert({ scope, source, Parser }, _content) {
       let value   = p.trim();
       let caption = value;
       let url     = new URL(`https://see.command/${value}`);
+      let name    = url.pathname.replace(/[\\/]/g, '');
 
       if (url.searchParams && url.searchParams.has('caption'))
         caption = url.searchParams.get('caption');
 
-      return `[\`${caption}\`](/?search=${encodeURIComponent(`name:${value}`)})`;
+      return `[\`${caption}\`](/?search=${encodeURIComponent(`name:${name}`)})`;
     }).replace(/@sourceRef\s+([^;]+?);/g, (m, p) => {
       const findOffsetOfRef = (name) => {
         return source.indexOf(`// @ref:${name}`);
