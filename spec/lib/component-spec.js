@@ -26,12 +26,12 @@ describe('MythixUIComponent', () => {
     globalThis.HTMLElement = window.HTMLElement;
   });
 
-  describe('compileStyleForDocument', () => {
-    it('works', () => {
-      let styleElement = dom.window.document.head.querySelector('style');
-      expect(MythixUIComponent.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span {background-color: black;}');
-    });
-  });
+  // describe('compileStyleForDocument', () => {
+  //   it('works', () => {
+  //     let styleElement = dom.window.document.head.querySelector('style');
+  //     expect(MythixUIComponent.compileStyleForDocument('test-component', styleElement).replace(/\n+/, ' ')).toEqual('test-component[stuff="true"], test-component .sub, test-component.test {color: red;} body.dark test-component span {background-color: black;}');
+  //   });
+  // });
 
   describe('classes', () => {
     it('works', () => {

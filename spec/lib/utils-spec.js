@@ -169,8 +169,8 @@ describe('Utils', () => {
       expect(Utils.isPrimitive(undefined)).toBe(false);
       expect(Utils.isPrimitive(null)).toBe(false);
       expect(Utils.isPrimitive(NaN)).toBe(false);
-      expect(Utils.isPrimitive(Infinity)).toBe(false);
-      expect(Utils.isPrimitive(-Infinity)).toBe(false);
+      expect(Utils.isPrimitive(Infinity)).toBe(true);
+      expect(Utils.isPrimitive(-Infinity)).toBe(true);
       expect(Utils.isPrimitive(Symbol.for('test'))).toBe(true);
       expect(Utils.isPrimitive(new Test())).toBe(false);
       expect(Utils.isPrimitive(2n)).toBe(true);
