@@ -1,4 +1,4 @@
-import { MythixUIComponent } from 'mythix-ui-core';
+import { MythixUIComponent } from '@cdn/mythix-ui-core@1';
 
 export default class TestComponent extends MythixUIComponent {
   static tagName = 'test-component';
@@ -13,6 +13,8 @@ export default class TestComponent extends MythixUIComponent {
   }
 
   mounted() {
+    super.mounted();
+
     console.log('mounted');
     this.$build(({ DIV, P }) => {
       return DIV.class('@@data.classes@@').id('fancyID').onClick(() => console.log('DID THE THING!'))(
