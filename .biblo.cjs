@@ -180,6 +180,7 @@ module.exports = {
   root: "./",
   include: [
     "**/lib/**/*.js",
+    "**/docs/**/*.md.yaml",
   ],
   exclude: [
     "**/node_modules/**",
@@ -191,7 +192,26 @@ module.exports = {
   props: {
     repo: "https://github.com/th317erd/mythix-ui-core",
   },
-  blockProcessor: (context) => {
+  parserHelpers: [
+    {
+      matches:      (/\.md\.yaml$/i),
+      blockPattern: ({ source, blockConsumer }) => {
+        blockConsumer(source, source, 0);
+      },
+    },
+  ],
+  scopeHelpers: [
+    {
+      matches:  (/\.md\.yaml$/i),
+      exec:     ({ scope }) => {
+        scope.type = 'Article';
+        scope.lineNumber = 1;
+
+        return scope;
+      },
+    },
+  ],
+  scopeProcessor: (context) => {
     let { scope, source, Parser } = context;
 
     const convert = (content) => {
@@ -346,6 +366,12 @@ module.exports = {
       //     return findReferenceID(scopes, seeRef);
       //   })).filter(Boolean);
       // }
+
+      if (scope.type === 'Article') {
+        scope.desc = scope.desc.replace(/\$\{\{(\w+)\}\}/g, (m, name) => {
+          return scope[name];
+        });
+      }
 
       return scope;
     }).filter(Boolean);

@@ -1,0 +1,49 @@
+order: A0
+name: Getting Started
+desc: |
+  Hello there! We know learning a new framework can always be daunting. Don't sweat it though. We believe in the [Golden Rule](https://en.wikipedia.org/wiki/Golden_Rule), and so will treat you kindly. This documentation is designed for humans, not for computers.
+
+  First, a little blurb on this documentation. This entire thing is laid out as a stack of "entities", where each "entity" contains information regarding a certain subset of the Mythix UI framework. This "${{name}}" article for example would be one of these imaginary "entities". Another way one can think of these entities is to think of them like a piece of paper, where each one contains a focused piece of information regarding a certain function, class, property, or namespace.
+
+  At the top of this page you can always easily access the Quick Search. You can at any time type into this Quick Search  to instantly search across this entire documentation set. Search terms will be matched against the title, content, and id of each entity.
+
+  Mythix UI is a framework to assist in creating [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components). We try to be minimally opinionated about non-important things, yet strongly opinionated about important things. For example, we deliberately make it difficult to work with the `style` attribute of elements, because unlike other popular frameworks, we believe in upholding a [strong separation of concerns](https://en.wikipedia.org/wiki/Separation_of_content_and_presentation), and are fully aware that abuse of the `style` attribute is bad for accessibility standards, user stylesheets, `media` attributes, system maintenance, flexible design, and much more.
+
+  Mythix UI attempts to remain as small as possible while providing the developer useful tools that they would likely need to implement themselves. For example, easily creating DOM on the fly with Javascript is a fairly daunting task, even if it isn't complex. Sometimes a single element creation and insert can take half a dozen or more lines of code. Mythix UI assists the developer in areas like this. As a framework, it makes element creation and insertion easy and intuitive. For example, one can use the @see Component.build; method to create complex element fragment and then insert them into the master DOM.
+
+  ```javascript
+  import {
+    MythixUIComponent,
+  } from '@cdn/mythix-ui-core@1'; // ensure we lock this to whatever version is important to us
+
+  export class DemoNavComponent extends MythixUIComponent {
+    static tagName = 'demo-nav-component'; // a "something-" prefix is required
+
+    mounted() { // called whenever the component is added to another element
+      let list = [
+        'Test 1',
+        'Test 2',
+        'Lorem Ipsum',
+      ];
+
+      // Dynamically build and append some elements (with attributes and event bindings)
+      this.build(({ NAV, UL, LI, $TEXT }) => {
+        return UL.class('interactive-list')(
+          ...list.map((item, index) => {
+            return LI.class('item-name focusable').dataIndex(index).onClick(this.onItemClick)(
+              //               ...children of LI element
+              $TEXT(item),  // in this case, a text node
+            );
+          }),
+        );
+      }).appendTo(this); // append to this element
+    }
+
+    // All class methods are automatically bound to "this" inside the super.constructor
+    onItemClick(event) {
+      console.log('Item Clicked!', event.target);
+    }
+  }
+
+  CustomDemoComponent.register();
+  ```
