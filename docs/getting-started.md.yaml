@@ -3,47 +3,72 @@ name: Getting Started
 desc: |
   Hello there! We know learning a new framework can always be daunting. Don't sweat it though. We believe in the [Golden Rule](https://en.wikipedia.org/wiki/Golden_Rule), and so will treat you kindly. This documentation is designed for humans, not for computers.
 
-  First, a little blurb on this documentation. This entire thing is laid out as a stack of "entities", where each "entity" contains information regarding a certain subset of the Mythix UI framework. This "${{name}}" article for example would be one of these imaginary "entities". Another way one can think of these entities is to think of them like a piece of paper, where each one contains a focused piece of information regarding a certain function, class, property, or namespace.
+  First, a little blurb on this documentation. This entire thing is laid out as a stack of "entities", where each "entity" contains information regarding a certain subset of the Mythix UI framework. This "${{name}}" article for example would be one of these imaginary "entities". Another way one can think of these entities is to think of them like posts on a social site, where each one contains a focused piece of information regarding a certain function, class, property, or namespace.
 
   At the top of this page you can always easily access the Quick Search. You can at any time type into this Quick Search  to instantly search across this entire documentation set. Search terms will be matched against the title, content, and id of each entity.
 
+  <hr>
+
   Mythix UI is a framework to assist in creating [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components). We try to be minimally opinionated about non-important things, yet strongly opinionated about important things. For example, we deliberately make it difficult to work with the `style` attribute of elements, because unlike other popular frameworks, we believe in upholding a [strong separation of concerns](https://en.wikipedia.org/wiki/Separation_of_content_and_presentation), and are fully aware that abuse of the `style` attribute is bad for accessibility standards, user stylesheets, `media` attributes, system maintenance, flexible design, and much more.
 
-  Mythix UI attempts to remain as small as possible while providing the developer useful tools that they would likely need to implement themselves. For example, easily creating DOM on the fly with Javascript is a fairly daunting task, even if it isn't complex. Sometimes a single element creation and insert can take half a dozen or more lines of code. Mythix UI assists the developer in areas like this. As a framework, it makes element creation and insertion easy and intuitive. For example, one can use the @see Component.build; method to create complex element fragment and then insert them into the master DOM.
+  The goals of Mythix UI are as follows:
+  * Assist with [Web Component](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components) creation.
+  * Assist with DOM queries and manipulation.
+  * Be modular, extensible, flexible, and integrate and interoperate well with others.
+  * Be incredibly small, simple, and mostly invisible.
+  * Be opinionated on things that actually matter, but not otherwise.
+  * No tools required to setup or use.
+  * Be easily distributed and easily shared, while retaining version control.
+  * Provide useful tools and features to the broad community across the globe, for every language and culture, to ease the development of interactive websites and UIs.
 
-  ```javascript
-  import {
-    MythixUIComponent,
-  } from '@cdn/mythix-ui-core@1'; // ensure we lock this to whatever version is important to us
+  For developers this means:
+  * With quick and easy setup, start using Mythix UI with zero hassle. You can even drop a few lines of code into your browser developer tools right now and off you go experimenting, without ever leaving your browser! Go ahead, paste this into the `<head>` of any document:
 
-  export class DemoNavComponent extends MythixUIComponent {
-    static tagName = 'demo-nav-component'; // a "something-" prefix is required
+      ```html
+      <!-- Import Maps -->
+      <script type="importmap">
+        {
+          "imports": {
+            "@cdn/mythix-ui-core@${{majorVersion}}": "https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js"
+          }
+        }
+      </script>
 
-    mounted() { // called whenever the component is added to another element
-      let list = [
-        'Test 1',
-        'Test 2',
-        'Lorem Ipsum',
-      ];
+      <!-- Mythix UI -->
+      <script src="https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js" type="module"></script>
+      ```
 
-      // Dynamically build and append some elements (with attributes and event bindings)
-      this.build(({ NAV, UL, LI, $TEXT }) => {
-        return UL.class('interactive-list')(
-          ...list.map((item, index) => {
-            return LI.class('item-name focusable').dataIndex(index).onClick(this.onItemClick)(
-              //               ...children of LI element
-              $TEXT(item),  // in this case, a text node
-            );
-          }),
-        );
-      }).appendTo(this); // append to this element
-    }
+  * Easy [Web Component](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components) creation.
+  * Easy interoperability: Mythix UI components can be embedded in other frameworks, or other frameworks can be embedded into Mythix UI Components.
+  * Easy templating system, templating engine, resource fetching, and version management.
+  * A fully featured templating engine, with dynamic auto-updating properties.
+  * A fully featured I18N engine built-in.
+  * Lazy-loading content engine built-in.
+  * Easy Element creation, querying, modification, insertion, and removal.
+  * Hassle free event bindings.
+  * Useful tools often needed for most websites / applications.
+  * Zero tools or need to setup any environment except a text editor / IDE.
+  * Iterative templates, search boxes, modals, and other common components at your fingertips (using provided Mythix UI packages found online).
+  * ... and much more! All within ${{librarySize}} (uncompressed)!
 
-    // All class methods are automatically bound to "this" inside the super.constructor
-    onItemClick(event) {
-      console.log('Item Clicked!', event.target);
-    }
-  }
 
-  CustomDemoComponent.register();
-  ```
+  Mythix UI attempts to remain as small as possible while providing the developer useful tools that they would likely need to implement themselves. For example, easily creating DOM on the fly with Javascript is a fairly daunting task, even if it isn't complex. Sometimes a single element creation and insert can take half a dozen or more lines of pure vanilla JavaScript. Mythix UI assists the developer in areas like this. As a framework, it makes element creation and insertion easy and intuitive. For example, one can use the @see Component.build; method to create complex element fragments and then insert them into the DOM. There are also useful tools like the @see QueryEngine; class. This is a jQuery-like wrapper around an array, that like jQuery allows querying elements from the DOM, while also operating on those elements by filtering them, removing them, inserting them, etc... Keep in mind that this is **not** jQuery. Its interface was simply inspired by jQuery.
+
+  Being an assistive [Web Component](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components) framework, Mythix UI heavily relies on [templates](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). We highly recommend you fully read up and understand both Web Components, and templates.
+  Without this foundational understanding you might find yourself in some confusing and tricky situations ([for example, the idea that you rarely--if ever--want to use a `constructor` in Web Components](https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance)).
+
+  While we are discussing Web Components, now is probably a good time to mention some of the component life-cycle hooks. Most Mythix UI component life-cycle hooks are simple wrappers around Web Component life-cycle hooks. You can see a list of the hooks and their translations between technologies below. The choice to rename these life-cycle hooks was made simply for ease of use. For example, `mounted` is a lot more natural sounding and easier to remember than `connectedCallback()`.
+
+  | Web Component life-cycle hook name | Corresponding Mythix UI life-cycle hook name | Notes |
+  |---------------------------|-----------------------|-------|
+  | `connectedCallback`         | `mounted`             | Unlike `connectedCallback`, Mythix UI will do some component setup before calling `mounted` |
+  | `disconnectedCallback`      | `unmounted`           | Behaves identically to `disconnectedCallback` |
+  | `adoptedCallback`           | `adopted`             | Behaves identically to `adoptedCallback` |
+  | `attributeChangedCallback`  | `attributeChanged`    | Behaves identically to `attributeChangedCallback`, [except that special attribute methods may be called first](/?search=name%3ASpecialized+Attribute+Methods). |
+
+  Note: :info: The good news is, if you hate our deviation from the standard, you can simply not use the life-cycle methods Mythux UI defines, and instead use the names defined in the [Web Component](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components) API standard as usual! Just don't forget to call `super()` in the methods you implement!
+
+  @nextEntity;
+
+
+

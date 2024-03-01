@@ -1,0 +1,95 @@
+order: A1
+name: Specialized Attribute Methods
+desc: |
+  Mythix UI supports specially named methods for components that will dynamically react to attribute requests.
+
+  To use these specialized methods, you simply need to name your methods appropriately. The naming convention is `attr$yourAttributeName`. When a method is named like this, Mythix UI will do a few things for you to make your life easier:
+
+  * First, it will parse method names with this naming pattern from the `prototype` chain of your component, and will then create the [`static observedAttributes`](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes) property on your component class for you automatically.
+  * Second, it will use methods following this convention as `setter` notification callbacks for attributes (i.e. your method will be called when the attribute's value changes).
+  * Third, to be more descriptive, one can create actual `getters` and `setters` using this naming convention to entirely intercept the process of getting and setting attribute values for any specific attribute.
+  * Finally, when using this naming convention for methods, for each such attribute a "bridge property" getter/setter property will be created for the element. For example, if you create a method on your component named `attr$source` then your element instance would automatically have a property named `source` as a getter/setter, that would both get the attribute value for you when called as a getter, and set the attribute value on your element when set from JavaScript.
+
+  Let's look at a quick visual example for better understanding:
+
+  ```javascript
+  import {
+    MythixUIComponent,
+    Utils,
+  } from '@cdn/mythix-ui-core@1'; // ensure we lock this to whatever version is important to us
+
+  export class DemoAttributeComponent extends MythixUIComponent {
+    // ...No need to define `static observedAttributes = [ ... ];`
+
+    static tagName = 'demo-attribute-component'; // a "something-" prefix is required
+
+    // This will be called whenever the 'my-custom-attribute-name' attribute
+    // has its value changed (from any source, including browser devtools).
+    // This also sets up the instance "bridge property" `myCustomAttributeName` so
+    // it can be directly interacted with via JavaScript.
+    //
+    // Please keep in mind that this will NOT remain a directly callable method
+    // after Mythix UI manages your component. Instead, it will be a getter/setter
+    // property named `myCustomAttributeName` on your element instance. For
+    // example: `demoAttributeComponentElement.myCustomAttributeName` is how you
+    // would get/set this attribute. This method will also be called if the
+    // attribute's value is changed via any other means.
+    //
+    // This method will only be called when your element's attribute named
+    // 'my-custom-attribute-name' is SET. It will NOT be called when the attribute
+    // value is FETCHED.
+    attr$myCustomAttributeName([ newValue, oldValue ]) {
+
+    }
+
+    // Alternatively, you can define it as a setter, which is functionally equivalent.
+    // This format is the Mythix UI preferred way of doing things, as
+    // it is more verbose, and extremely obvious what is happening:
+    // i.e. it reads like "on set of attr name".
+    //
+    // Note: This setter will only ever be called if the previous value of the
+    // attribute and the new value differ.
+    set attr$myCustomAttributeName([ newValue, previousValue ]) {
+      // `this.attr` is a helper method provided by Mythix UI
+      // to make interacting with attributes easier
+      this.attr('my-custom-attribute-name', newValue);
+    }
+
+    // You can also define a getter. This operation is confusing, and so
+    // not recommended by the Mythix UI team. It is useful at times however,
+    // which is why we support it, even though it isn't recommended.
+    //
+    // We can't (or rather, wouldn't want to) intercept `getAttribute` requests
+    // against our component directly (at a DOM level). That might be dangerous,
+    // and if not implemented properly would be a potential source for hard to trace bugs.
+    //
+    // Instead, a getter of this type is only called when the related JavaScript
+    // property for your component is accessed. In our example here, the
+    // following getter would only be called when we fetch the value of our custom
+    // bridge property, i.e.: `myCustomAttributeElement.myCustomAttributeName`.
+    //
+    // By default (if you yourself don't specify this method), such a "bridge property getter"
+    // is setup to simply call `return this.attr('my-custom-attribute-name')` to get the current
+    // value of the attribute. As soon as you define this method, YOU must return the current
+    // value of the attribute to JavaScript, which you can modify before you return it if you
+    // want (just keep in mind that if you do this, the value returned won't match the real
+    // attribute value of your element). If you implement a custom getter for an attribute,
+    // calling `element.getAttribute('my-attribute')` could give you a different result than if
+    // you call `element.myAttribute`.
+    get attr$myCustomAttributeName() {
+      return this.attr('my-custom-attribute-name');
+    }
+  }
+
+  // Parse your attribute handlers, and register the
+  // component with the browser
+  DemoAttributeComponent.register();
+  ```
+
+  So, as you can see, we can define methods whose names follow a certain naming convention where the prefix of the method name begins with `attr$`, and everything following `attr$` is the actual attribute name, in camelCase (the attribute name on the element itself will be kebab-case).
+
+  When we do this, we define a "setter" for an attribute, that will be called whenever the attribute's value is modified on the element. We can then react to such changes, to perform some task, load some resource, or maybe even change how our component looks or behaves.
+
+  It is recommended that you follow this naming convention with actual JavaScript getters and setters format. In this way, your code will behave as just described, but will be clearer to read and understand.
+
+  You can also always fallback to simply using the @see MythixUIComponent.attributeChanged; life-cycle hook as well, if you find that more convenient.

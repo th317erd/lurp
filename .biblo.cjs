@@ -1,8 +1,11 @@
+const FileSystem  = require('node:fs');
+const Path        = require('node:path');
 const { URL }     = require('url');
 const showdown    = require('showdown');
 const entities    = require('entities');
 const htmlparser2 = require('htmlparser2');
 const renderHTML  = require('dom-serializer').default;
+const packageJSON = require('./package.json');
 
 const converter = new showdown.Converter({
   ghCompatibleHeaderId:     true,
@@ -121,7 +124,7 @@ function _convert({ scope, source, Parser }, _content) {
 
       return `<a class="source-control-link" href="${scope.repoLink}#L${lineNumber || 1}" target="_blank"><span class="material-symbols-outlined">arrow_outward</span></a>`;
     }).replace(/@types\s+([^;]+?);/g, (m, types) => {
-      return `<span class="data-type">${mdnReferences(types.trim())}</span>`;
+      return `<span class="data-type">${mdnReferences(types.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;'))}</span>`;
     }).replace(/:(\w+?):/g, (m, name) => {
       let emojis = {
         'eye':      '👁️',
@@ -131,6 +134,8 @@ function _convert({ scope, source, Parser }, _content) {
       };
 
       return emojis[name] || m;
+    }).replace(/@nextEntity;/g, () => {
+      return `<button class="next-page-button" onclick="globalThis.globalScope.goToNextEntity(event)"><span>Go to Next Page</span><span class="material-symbols-outlined">skip_next</span></button>`;
     });
   };
 
@@ -369,6 +374,17 @@ module.exports = {
 
       if (scope.type === 'Article') {
         scope.desc = scope.desc.replace(/\$\{\{(\w+)\}\}/g, (m, name) => {
+          if (name === 'majorVersion') {
+            return packageJSON.version.split('.')[0];
+          } else if (name === 'librarySize') {
+            try {
+              let stat = FileSystem.statSync(Path.resolve('./dist/index.js'));
+              return `${Math.ceil(stats.size / 1024)}K`;
+            } catch (error) {
+              return '68K';
+            }
+          }
+
           return scope[name];
         });
       }
