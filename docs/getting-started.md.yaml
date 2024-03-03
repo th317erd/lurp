@@ -22,7 +22,7 @@ desc: |
   * Provide useful tools and features to the broad community across the globe, for every language and culture, to ease the development of interactive websites and UIs.
 
   For developers this means:
-  * With quick and easy setup, start using Mythix UI with zero hassle. You can even drop a few lines of code into your browser developer tools right now and off you go experimenting, without ever leaving your browser! Go ahead, paste this into the `<head>` of any document:
+  * With quick and easy setup, start using Mythix UI with zero hassle. You can even drop a few lines of code into your browser developer tools right now and go experimenting, without ever leaving your browser! Go ahead, paste this into the `<head>` of any document:
 
       ```html
       <!-- Import Maps -->

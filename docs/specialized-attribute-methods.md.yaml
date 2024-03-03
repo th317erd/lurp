@@ -1,4 +1,4 @@
-order: A1
+order: A10
 name: Specialized Attribute Methods
 desc: |
   Mythix UI supports specially named methods for components that will dynamically react to attribute requests.

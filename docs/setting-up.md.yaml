@@ -1,0 +1,20 @@
+order: A1
+name: Setting Up
+desc: |
+  Setting up Mythix UI is as simple as defining an [importmap](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) and including a `<script>` tag in your document's `<head>` tag to load Mythix UI. Obviously more complex things _can_ be done, such as customizing resource resolution, lazy loading resources / chunks, and dynamically importing what is needed. But that can all come later. For now, to start off with, just dump the following into your `<head>` tag:
+
+  ```html
+  <!-- Import Maps -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@cdn/mythix-ui-core@${{majorVersion}}": "https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js"
+      }
+    }
+  </script>
+
+  <!-- Mythix UI -->
+  <script src="https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js" type="module"></script>
+  ```
+
+  Many downstream scripts and components will import `'@cdn/mythix-ui-core'`, so it is important to ensure we setup our import map properly to start off with. Next, we just import Mythix UI itself from a common CDN. After this initial setup, we are now ready to use Mythix UI, including its built-in elements such as @see MythixElements.mythix-require;, and @see MythixElements.mythix-language-provider;.
