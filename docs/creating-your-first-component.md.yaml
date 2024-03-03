@@ -1,0 +1,123 @@
+order: A2
+name: Creating Your First Component
+desc: |
+  Creating your first component will be a blast! Not only will we have fun, but we will see how easy Mythix UI is to use. First, we need to define our component's class, and that needs to `extend` from `MythixUIComponent`.
+
+  Next, we need to define what its `tagName` (Element name) will be.
+
+  Finally, we probably want our component to do something, so let's have it be a clock that will update it real time.
+
+  ```javascript
+  // /demos/real-time-clock.js
+
+  import {
+    MythixUIComponent,
+  } from '@cdn/mythix-ui-core@1'; // you should always specify your versions properly
+
+  const ONE_SECOND = 1000; // 1000 milliseconds
+
+  class RealTimeClock extends MythixUIComponent {
+    static shadow = false; // Inform our underlying component that we do not want a shadow DOM
+
+    static tagName = 'real-time-clock'; // The name of our element, i.e. `<real-time-clock></real-time-clock>`
+    // FYI: Web Component standards REQUIRE a `/^\w-/` (word-) prefix for custom element names
+
+    getFormattedTime() {
+      return `${(new Date()).toGMTString()}`;
+    }
+
+    // Create a method to update our display time that is rendered
+    // to the screen. We will do this simply by setting `textContent`
+    // on our custom element. We will get more complicated in our
+    // next example. For now, we will just keep it basic.
+    updateDisplayTime() {
+      this.textContent = this.getFormattedTime();
+    }
+
+    // This is called when our element enters the DOM structure (i.e. is inserted as a child)
+    mounted() {
+      // First, let's ensure to render our `textContent` right when we are inserted
+      this.updateDisplayTime();
+
+      // Next, setup an interval to update the display every second
+      this.intervalID = setInterval(() => {
+        // Update the display time every second
+        this.updateDisplayTime();
+      }, ONE_SECOND);
+    }
+
+    unmounted() {
+      if (this.intervalID) {
+        clearInterval(this.intervalID);
+        this.intervalID = null;
+      }
+    }
+  }
+
+  RealTimeClock.register(); // Register our component with the browser
+  ```
+
+  ```html
+  <!-- /index.html -->
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Mythix UI Demo</title>
+
+      <!-- Import Maps -->
+      <script type="importmap">
+        {
+          "imports": {
+            "@cdn": "https://cdn.jsdelivr.net/npm",
+            "@cdn/mythix-ui-core@${{majorVersion}}": "https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js"
+          }
+        }
+      </script>
+
+      <!-- Mythix UI -->
+      <script src="https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js" type="module"></script>
+
+      <!-- Custom URL Resolver -->
+      <script>
+        const mythixUI = (globalThis.mythixUI = (globalThis.mythixUI || {})); // Use or setup standard mythixUI scope
+        const globalScope = mythixUI.globalScope = (mythixUI.globalScope || {}); // Use or setup standard globalScope scope
+
+        // Resolver for <mythix-require>
+        const CDN_SCRIPT  = /^@cdn\/([\w-]+)(@[\d.]+)?$/;
+        const DEMO_SCRIPT = /^@demos\/(.+)$/;
+
+        mythixUI.urlResolver = ({ src, path, fileName }) => {
+          // Check if this is a CDN url
+          let result = ('' + src).match(CDN_SCRIPT);
+          if (result)
+            return `https://cdn.jsdelivr.net/npm/${result[1]}${result[2] || '@${{majorVersion}}' /* Default version */ }/dist/${result[1]}.html`;
+
+          // Check if this is a demo script URL
+          result = ('' + src).match(DEMO_SCRIPT);
+          if (result)
+            return `/demos/${result[1]}`;
+
+          // Pass through
+          return src;
+        }
+      </script>
+    </head>
+
+    <body>
+      <mythix-require src="@demos/real-time-clock.js"></mythix-require>
+
+      <real-time-clock></real-time-clock>
+    </body>
+  </html>
+  ```
+
+  And this is the result:
+  <mythix-require src="/demos/real-time-clock.js"></mythix-require>
+  <span class="realtime-example"><real-time-clock></real-time-clock></span>
+
+  How cool is that? Now, for our next component, we will upgrade this example to have its own built-in HTML template as part of the component.
+
+  Let's go!
+
+  @nextEntity;

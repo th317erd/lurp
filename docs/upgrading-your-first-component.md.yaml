@@ -1,0 +1,104 @@
+order: A3
+name: Upgrading Your First Component
+desc: |
+  As you probably noticed, our last component was only JavaScript. No HTML at all! No fun! Well, let's go ahead and fix that right now. To keep our demos separate, we are going to copy the `/demos/real-time-clock.js` to `/demos/real-time-clock-component.js`, and create a new file called `/demos/real-time-clock-component.html`. The contents of this HTML file will look like follows:
+
+  ```html
+  <!-- /demos/real-time-clock-component.html -->
+
+  <!-- Component style in "document" scope -->
+  <style data-for="real-time-clock-component">
+    /* Global (document-level) styles go here */
+  </style>
+
+  <!-- Component template -->
+  <!-- The "data-for" attribute ties it to the registered component class -->
+  <template data-for="real-time-clock-component">
+    <span part="time">\@@currentTime@@</span>
+  </template>
+
+  <!-- Now include the component script -->
+  <script type="module" src="./real-time-clock-component.js"></script>
+  ```
+
+  Next, we need to define what its `tagName` (Element name) will be.
+
+  Finally, we probably want our component to do something, so let's have it be a clock that will update it real time.
+
+  ```javascript
+  // /demos/real-time-clock-component.js
+
+  import {
+    MythixUIComponent,
+  } from '@cdn/mythix-ui-core@1'; // you should always specify your versions properly
+
+  const ONE_SECOND = 1000; // 1000 milliseconds
+
+  class RealTimeClockComponent extends MythixUIComponent {
+    static shadow = true; // Now a shadow DOM is more useful
+
+    // This ties us to our HTML template
+    static tagName = 'real-time-clock-component';
+
+    getFormattedTime() {
+      return `${(new Date()).toGMTString()}`;
+    }
+
+    /* We no longer need a method to help us update the time */
+
+    constructor() {
+      super();
+
+      // Define our dynamicProperty
+      this.dynamicProp('currentTime', this.getFormattedTime());
+    }
+
+    // This is called when our element enters the DOM structure (i.e. is inserted as a child)
+    mounted() {
+      // Next, setup an interval to update the display every second
+      this.intervalID = setInterval(() => {
+        // Update the display time every second
+        // Simply updating the dynamic property
+        // will cause the component to automatically
+        // re-render itself to match.
+        this.currentTime = this.getFormattedTime();
+      }, ONE_SECOND);
+    }
+
+    unmounted() {
+      if (this.intervalID) {
+        clearInterval(this.intervalID);
+        this.intervalID = null;
+      }
+    }
+  }
+
+  RealTimeClockComponent.register(); // Register our component with the browser
+  ```
+
+  ```html
+  <!-- /index.html -->
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <!-- ... all that we saw in the previous example -->
+    </head>
+
+    <body>
+      <!-- Notice the minor name change here, with the "-component" postfix -->
+      <!-- Also notice how we are "requiring" an HTML file -->
+      <mythix-require src="@demos/real-time-clock-component.html"></mythix-require>
+
+      <!-- The script for the component gets included by the components HTML -->
+      <!-- No now we are ready to rock n' roll! -->
+      <real-time-clock-component></real-time-clock-component>
+    </body>
+  </html>
+  ```
+
+  And this is the result:
+  <mythix-require src="/demos/real-time-clock-component.html"></mythix-require>
+  <span class="realtime-example"><real-time-clock-component></real-time-clock-component></span>
+
+  @nextEntity;

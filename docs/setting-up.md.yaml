@@ -1,13 +1,14 @@
 order: A1
 name: Setting Up
 desc: |
-  Setting up Mythix UI is as simple as defining an [importmap](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) and including a `<script>` tag in your document's `<head>` tag to load Mythix UI. Obviously more complex things _can_ be done, such as customizing resource resolution, lazy loading resources / chunks, and dynamically importing what is needed. But that can all come later. For now, to start off with, just dump the following into your `<head>` tag:
+  Setting up Mythix UI is as simple as defining an [importmap](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) and including a `<script>` tag in your document's `<head>` to load Mythix UI. Obviously more complex things _can_ be done, such as customizing resource resolution, lazy loading resources / chunks, and dynamically importing what is needed. But that can all come later. For now, to start off with, just dump the following into your `<head>` tag:
 
   ```html
   <!-- Import Maps -->
   <script type="importmap">
     {
       "imports": {
+        "@cdn": "https://cdn.jsdelivr.net/npm",
         "@cdn/mythix-ui-core@${{majorVersion}}": "https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js"
       }
     }
@@ -17,4 +18,37 @@ desc: |
   <script src="https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js" type="module"></script>
   ```
 
-  Many downstream scripts and components will import `'@cdn/mythix-ui-core'`, so it is important to ensure we setup our import map properly to start off with. Next, we just import Mythix UI itself from a common CDN. After this initial setup, we are now ready to use Mythix UI, including its built-in elements such as @see MythixElements.mythix-require;, and @see MythixElements.mythix-language-provider;.
+  Many downstream scripts and components will import `'@cdn/mythix-ui-core'`, so it is important to ensure we setup our import map properly to start off with. Next, we just import Mythix UI itself from a common CDN. After this initial setup, we are now ready to use Mythix UI, including its built-in elements such as @see MythixElements.MythixUIRequire;, and @see MythixElements.MythixUILanguageProvider;.
+
+  Now that we have fully setup Mythix UI, the first thing we will want to do that will GREATLY help us in development is to setup a global `urlResolver`. This method will allow us to modify how Mythix UI internally resolves all URLs.
+
+  Add the following to your head, immediately below the importing of Mythix UI:
+  ```html
+  <script>
+    const mythixUI = (globalThis.mythixUI = (globalThis.mythixUI || {})); // Use or setup standard mythixUI scope
+    const globalScope = mythixUI.globalScope = (mythixUI.globalScope || {}); // Use or setup standard globalScope scope
+
+    // Resolver for <mythix-require>
+    const CDN_SCRIPT  = /^@cdn\/([\w-]+)(@[\d.]+)?$/;
+    const APP_SCRIPT  = /^@app\/(.+)$/;
+
+    mythixUI.urlResolver = ({ src, path, fileName }) => {
+      // Check if this is a CDN url
+      let result = ('' + src).match(CDN_SCRIPT);
+      if (result)
+        return `https://cdn.jsdelivr.net/npm/${result[1]}${result[2] || '@1'}/dist/${result[1]}.html`;
+
+      // Check if this is an application URL
+      result = ('' + src).match(APP_SCRIPT);
+      if (result)
+        return `/app/resources/javascript/${result[1]}`;
+
+      // Pass through
+      return src;
+    }
+  </script>
+  ```
+
+  This global `urlResolver` will allow you to resolve URLs however you want. It is standard for the `@cdn/` prefix to be used by all scripts that need to load other (external) modules. So ensure you properly configure this entry to point to a valid CDN or other resource, at the very least.
+
+  @nextEntity;

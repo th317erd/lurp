@@ -181,6 +181,26 @@ function findReferenceID(scopes, query) {
     return `id:${scope.id}`;
 }
 
+function expandInternalVariableTemplates(scope, content) {
+  if (!content)
+    return content;
+
+  return content.replace(/\$\{\{(\w+)\}\}/g, (m, name) => {
+    if (name === 'majorVersion') {
+      return packageJSON.version.split('.')[0];
+    } else if (name === 'librarySize') {
+      try {
+        let stats = FileSystem.statSync(Path.resolve('./dist/index.js'));
+        return `${Math.ceil(stats.size / 1024)}K`;
+      } catch (error) {
+        return '68K';
+      }
+    }
+
+    return scope[name];
+  })
+}
+
 module.exports = {
   root: "./",
   include: [
@@ -220,7 +240,8 @@ module.exports = {
     let { scope, source, Parser } = context;
 
     const convert = (content) => {
-      return _convert(context, content);
+      let result = _convert(context, content);
+      return expandInternalVariableTemplates(scope, result);
     };
 
     const convertDesc = (desc) => {
@@ -372,22 +393,8 @@ module.exports = {
       //   })).filter(Boolean);
       // }
 
-      if (scope.type === 'Article') {
-        scope.desc = scope.desc.replace(/\$\{\{(\w+)\}\}/g, (m, name) => {
-          if (name === 'majorVersion') {
-            return packageJSON.version.split('.')[0];
-          } else if (name === 'librarySize') {
-            try {
-              let stat = FileSystem.statSync(Path.resolve('./dist/index.js'));
-              return `${Math.ceil(stats.size / 1024)}K`;
-            } catch (error) {
-              return '68K';
-            }
-          }
-
-          return scope[name];
-        });
-      }
+      if (scope.desc)
+        scope.desc = expandInternalVariableTemplates(scope, scope.desc);
 
       return scope;
     }).filter(Boolean);

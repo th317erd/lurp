@@ -29,6 +29,7 @@ desc: |
       <script type="importmap">
         {
           "imports": {
+            "@cdn": "https://cdn.jsdelivr.net/npm",
             "@cdn/mythix-ui-core@${{majorVersion}}": "https://cdn.jsdelivr.net/npm/mythix-ui-core@${{majorVersion}}/dist/index.js"
           }
         }

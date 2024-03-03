@@ -1,4 +1,4 @@
-order: A10
+order: B1
 name: Specialized Attribute Methods
 desc: |
   Mythix UI supports specially named methods for components that will dynamically react to attribute requests.
@@ -93,3 +93,5 @@ desc: |
   It is recommended that you follow this naming convention with actual JavaScript getters and setters format. In this way, your code will behave as just described, but will be clearer to read and understand.
 
   You can also always fallback to simply using the @see MythixUIComponent.attributeChanged; life-cycle hook as well, if you find that more convenient.
+
+  @nextEntity;
