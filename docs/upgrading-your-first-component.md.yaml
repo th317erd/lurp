@@ -50,7 +50,7 @@ desc: |
       super();
 
       // Define our dynamicProperty
-      this.dynamicProp('currentTime', this.getFormattedTime());
+      this.defineDynamicProp('currentTime', this.getFormattedTime());
     }
 
     // This is called when our element enters the DOM structure (i.e. is inserted as a child)
@@ -100,5 +100,23 @@ desc: |
   And this is the result:
   <mythix-require src="/demos/real-time-clock-component.html"></mythix-require>
   <span class="realtime-example"><real-time-clock-component></real-time-clock-component></span>
+
+  Cool! In this example, we used an HTML template, combined with a DynamicProperty to automatically update the display of the dynamic property value when it changes.
+
+  The `this.defineDynamicProp` method we used created a getter/setter that is a @see DynamicProperty; instance for us. This is why we didn't use the return value. We have to have a getter/setter property, so that we can know when the user updates it, and therefor trigger an update, and so @see MythixUIComponent.defineDynamicProp; is more like `Object.defineProperty` than it is a property builder.
+
+  Still, it does return the @see DynamicProperty; instance used to define the property, and assigning the DynamicProperty to itself would result in no operation, so if it makes things easier to read, you can always do so if you want:
+  ```javascript
+  constructor() {
+    super();
+
+    // Define our dynamicProperty, and assign to the same variable
+    // just to look better to human eyes. The assignment won't
+    // actually do anything, and so is just for looks.
+    this.currentTime = this.defineDynamicProp('currentTime', this.getFormattedTime());
+  }
+  ```
+
+  Now, in the next section we'll take a moment to discuss some oddities about Web Components.
 
   @nextEntity;

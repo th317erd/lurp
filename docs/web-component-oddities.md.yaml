@@ -1,0 +1,39 @@
+order: A4
+name: Web Component Oddities
+desc: |
+  Hopefully you did yourself a favor and have already read up on [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_Components) and their quirks. If not, then you are in good hands, because we are discussing that now.
+
+  First, let's discuss the elephant in the room, the `constructor`. The `constructor` of a Web Component behaves oddly compared to other classes. Inside the `constructor` you will not have access to the elements attributes or children, and are disallowed from modifying the attributes or children.
+
+  Now at first, you might be like "Whhaaa?" 🤔 like I was, until you understand the reason beyond this oddity. The reasons for these oddities are best stated [here on the specification itself](https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance): Basically, the primary reason is that the DOM may be parsed *before* your custom element is loaded and registered. So the DOM engine needs to `construct` elements, but not *fully*, not until all JavaScript for the DOM has loaded. In short, the browser may need to "promote" your element later on, after the JavaScript for your element has been loaded and registered as a component (and also after the element has already been constructed).
+
+  The second most important thing to know about Web Components is their [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM). The Shadow DOM is like a completely separate document, but just for a single node of the DOM. If your component uses a Shadow DOM (which is entirely optional), then it is **very** important to know that it will have specialized behavior that you won't expect:
+  1. It is not always possible (and often difficult) to apply CSS from external sources, such as globally, through your `document`.
+  2. It is not always possible to bridge the gap into a component's Shadow DOM JavaScript (it is possible to make a [closed Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/mode)).
+  3. Another poorly engineered side-effect of the Shadow DOM is that it will also not have access to ANY of the resources from its parent `document`. This means for example if you have an icon pack loaded, or a font, then you are out of luck! It won't work in your Shadow DOM... at least not without a little mythical Mythix magic 😉. Any `<script>`, `<link>`, or `<style>` tag in the `<head>` of your document that has a `data-for` attribute that contains a comma separated list of selectors. Any component that matches the defined selectors will automatically be have such tags added to their template on insert. This helps if you have a font, or icon pack that you would like to share across all components for your site, even third party components.
+  4. The CSS selectors for Shadow DOM can be a little strange until you get used to them. I suggest you get familiar with them now: [:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host), [:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host_function), and [:host-context()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host-context). The `:host` selectors match against the owner of the Shadow DOM in question (called the "host"). The `:host-context()` selector matches on external context outside of the "host", i.e. the `body`, parents, or other external features of the document.
+  5. Only the styles applied inside the Shadow DOM are applied to the Shadow DOM (excepting [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)). This means your `<style>` or `<link>` tags must be inside the Shadow DOM. This is why it is standard in the component's HTML to have a `<style>` inside the template.
+
+  The last oddity we want to discuss is more about Mythix UI than the standards of browsers. Mythix UI will play some "tricks" to get access to (and out of) the Shadow DOM. For example, if you use @see MythixUIComponent.select;, it will naturally select components found inside your Shadow DOM (not functionality found with `querySelector`). @see Utils.getParentNode; will also search beyond the Shadow DOM boundary via some @see Utils.metadata?caption=metadata; that Mythix UI adds to the Shadow DOM to store the real parent node.
+
+  So the final question you are wondering is probably "When should I use a Shadow DOM?"
+
+  You should ask yourself the following questions:
+  1. Do I want to externally (at the `document` level) style the contents of my component?
+  2. Do I want externally styled children to be embeded into my component?
+  3. Am I able to use [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) or [slots](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots)?
+  4. Do I want or need the hassle of parts or slots?
+
+  As you can see, the answer really boils down to what you are trying to do. Take for example the `<mythix-for-each>` custom element that renders children iteratively like they are in a loop. When we designed this component, we had to take into account styling the children. Ultimately, the best option ended up being to NOT use a Shadow DOM, as internally styling the generated items (even though provided as children) became super difficult. Since it was the users elements we are rendering here, it didn't make much sense to break the ability to style them.
+
+  But this isn't always the case. Take for example the `<mythix-search>` field component. This one was a lot different. The only item that needed styling was the internal `<input>` field, and slots made a lot more sense for any `<input type="hidden">` fields the user needs to add. So for this case, it made more sense to have a Shadow DOM.
+
+  Another example would be the `<mythix-modal>` component. It is fully self contained with a Shadow DOM, because that makes a lot of sense for a modal system. However, it is still possible for the user to change the title of each modal, and the buttons each modal has via the use of [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) and [slots](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots). In this case a Shadow DOM made sense, especially when combined with slots which allowed the user to modify the modals as-needed.
+
+  It just depends on what your component is doing. If your component has external children and styling that need to be inserted into it a lot, then it might be a bad idea to use a Shadow DOM. If your component is mostly or entirely self-contained, then a Shadow DOM with a few `part` attributes or a few slots might be a great way to go. You decided; and ultimately, the browser will likely force you down a path based on what you want to do with your component.
+
+  There are two ways to control the Shadow DOM for your component. You can either set the static property `static shadow: true | false;` (default is `true`), or you can override the @see MythixUIComponent.createShadowDOM; method. The return value of this method is assigned to `this.shadow` of the component instance.
+
+  If a Shadow DOM is not used, then the template of the component (if any) will not be automatically appended on mount; you must manually append the template instead if you wish to do so, via `this.appendTemplateTo(this)` inside @see MythixUIComponent.mounted;.
+
+  @nextEntity;

@@ -19,8 +19,8 @@ class RealTimeClockComponent extends MythixUIComponent {
   constructor() {
     super();
 
-    // Define our dynamicProperty
-    this.dynamicProp('currentTime', this.getFormattedTime());
+    // Define our DynamicProperty
+    this.defineDynamicProp('currentTime', this.getFormattedTime());
   }
 
   // This is called when our element enters the DOM structure (i.e. is inserted as a child)
