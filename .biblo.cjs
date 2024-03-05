@@ -1,13 +1,52 @@
 const FileSystem  = require('node:fs');
 const Path        = require('node:path');
 const { URL }     = require('url');
-const showdown    = require('showdown');
+const ShowDown    = require('showdown');
 const entities    = require('entities');
+const highlightJS = require('highlight.js');
 const htmlparser2 = require('htmlparser2');
 const renderHTML  = require('dom-serializer').default;
 const packageJSON = require('./package.json');
 
-const converter = new showdown.Converter({
+
+ShowDown.extension('highlightjs', function () {
+  // use new showdown's regexp engine to conditionally parse codeblocks
+
+  const getLanguage = (left) => {
+    if ((/language-javascript/i).test(left))
+      return 'javascript';
+    else if ((/language-html/i).test(left))
+      return 'html';
+  }
+
+  const left  = '<pre><code\\b[^>]*>';
+  const right = '</code></pre>';
+  const flags = 'g';
+
+  const replacer = (_, match, left, right) => {
+    let language        = getLanguage(left);
+    let highlightedCode = highlightJS.highlight(
+      entities.decodeHTML(match),
+      {
+        languages: [ 'javascript', 'html' ],
+        language,
+      },
+    ).value;
+
+    return `${left.replace(/class="/g, 'class="hljs ')}${highlightedCode}${right}`;
+  };
+
+  return [
+    {
+      type:   'output',
+      filter: (text, _converter, _options) => {
+        return ShowDown.helper.replaceRecursiveRegExp(text, replacer, left, right, flags);
+      },
+    }
+  ];
+});
+
+const converter = new ShowDown.Converter({
   ghCompatibleHeaderId:     true,
   parseImgDimensions:       true,
   strikethrough:            true,
@@ -17,6 +56,7 @@ const converter = new showdown.Converter({
   openLinksInNewWindow:     true,
   backslashEscapesHTMLTags: true,
   emoji:                    true,
+  extensions:               [ 'highlightjs' ],
 });
 
 const RENDER_HTML_OPTIONS = {

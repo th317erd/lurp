@@ -1,0 +1,52 @@
+order: A5
+name: Attributes and other Misc Bolts
+desc: |
+  Mythix UI has some specialized attributes that you should probably know of.
+
+  Though Mythix UI strives to be a minimalistic framework, we also try to balance that with some useful features. For this purpose we have reserved a few attribute names, and use them for some really cool features.
+
+  1. **`data-mythix-src: URL`**
+
+      This is the "lazy loading" (also called "lazy partials") attribute. If it is used on *any* element, then it will setup a load trigger to load the url specified by this attribute, and dump the contents into the `children` of the owning element.
+
+      For example:
+
+      ```html
+      <article data-mythix-src="./articles/mythix-takes-the-industry-by-storm.html"></article>
+      ```
+
+      This will load the url `./articles/mythix-takes-the-industry-by-storm.html` when this specific `<article>` element is first scrolled into view. After it successfully loads the content, it will append to the `children` of the tag owning this attribute.
+
+      This is super handy to keep load times short on any website! By use of auto-loading partials like this, you can easily decrease the initial load time of your site. If you make many things auto-loaded partials, then smaller chunks of your website will load on an "as-needed" basis (when they enter the view). When content is inserted as `children`, it is also ran through the template engine. So for example, your loaded content could contain sub `data-mythix-src` attributes in child elements, or it could contain other dynamic properties, which would be mutated by the template engine on insert.
+
+  2. **`data-auto-merge: CSSSelector`**
+
+      The `data-auto-merge` attribute specifies a comma-separated list of CSS selectors. When any `<template>` is being inserted for a Mythix UI component, Mythix UI will see if any of these selectors match the component whose template is being inserted. If it does, then the element with the matching `data-auto-merge` attribute will be cloned and inserted into the component as well.
+
+      You can think of this attribute like an "element style" that is applied to every component. The selectors say which elements are the "target" this element will be cloned into. If it helps further, you can think of this kinda like a `::before` pseudo selector... except that in this case actual elements will be cloned and appended to the DOM.
+
+      This is extremely useful to bypass some of the headache with Web Components. For example, you can load a font for your site, and set the `data-auto-merge="*"` attribute, and that font will then be loaded (and usable) inside **every** Mythix UI component--even third party ones.
+
+  3. **`data-for: CSSSelector`**
+
+      The `data-for` attribute is used to link templates to their respective Web Component. The Mythix UI team has put in a lot of effort to try and ensure not transpilers or other tools are needed, nor the use of too much "auto-magic". So yes, though it may be painfully unfortunate, one must manually link a component's HTML template to the component's JavaScript. To make this less painful, you can use the `data-for` attribute, which if used, must be a direct 1x1 match with the `static tagName` property of the component.
+
+      You could also ignore this attribute entirely and instead simply define your own @see MythixUIComponent.getComponentTemplate; method.
+
+  4. **`data-from: CSSSelector`**
+
+      `data-from` is specific to the `<mythix-merge>` element, but is common enough where we felt we should list it here. It specifies a target template (or other element target matching the CSS selector) to be the source of element merging.
+
+      For example, when one component inherits from another component, it is common to also insert into the child component's template a `<mythix-merge data-from="parent-component">` to pull in the styling and other content of the parent.
+
+      Sometimes you don't want to merge everything. In this case, one can use combo `data-filter: CSSSelector` attribute to merge all source elements *except* those matching this defined CSS selector.
+
+      The selected elements that are merged into the destination ultimately replace the Node that this attribute is defined on. Any CSS selector can be defined, so this can also target multiple elements to merge into the destination.
+
+  5. **`data-mythix-component-name: string`**
+
+      This attribute is added automatically to every component as it is mounting. It simply contains the value of the component's name. Why? Primarily for CSS styling and also for querying the DOM. It is used internally by Mythix UI for example to keep components invisible (with `opacity: 0.0`) while things are loading, to decrease rendering jitter.
+
+      It is standard practice for every Mythix UI component to have this attribute, and it is configured this way by default.
+
+  @nextEntity;
