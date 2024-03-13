@@ -125,3 +125,5 @@ web_modules/
 .eslintrc.cjs
 playground
 webpack*
+.biblo.cjs
+**/docs/**
