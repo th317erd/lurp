@@ -1,6 +1,6 @@
 {
   "name": "mythix-ui-core",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A different take on web development",
   "main": "lib/index.js",
   "type": "module",
