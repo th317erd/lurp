@@ -126,4 +126,4 @@ web_modules/
 playground
 webpack*
 .biblo.cjs
-**/docs/**
+docs/**
